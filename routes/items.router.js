@@ -32,7 +32,7 @@ router.get("/", async (req, res) => {
     if (!allItems.length) {
       return res.status(400).json({ message: "Товаров не найдено" });
     }
-
+    //
     if (limit) {
       allItems = await allItems.limit(limit);
     }
