@@ -32,7 +32,6 @@ router.get("/", async (req, res) => {
     if (!allItems.length) {
       return res.status(400).json({ message: "Товаров не найдено" });
     }
-    //
     if (limit) {
       allItems = await allItems.limit(limit);
     }
@@ -44,7 +43,7 @@ router.get("/", async (req, res) => {
 
     res.status(200).json(items);
   } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({ message: "Internal server error", error: error });
   }
 });
 
