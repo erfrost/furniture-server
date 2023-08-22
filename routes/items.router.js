@@ -103,19 +103,22 @@ router.get("/by_subcategory/:subcategory_id", async (req, res) => {
     }
     const itemsIdArray = currentSubcategory.items;
 
-    const allItems = await Item.find({
+    let query = Item.find({
       _id: { $in: itemsIdArray },
     });
 
     if (limit) {
-      allItems = allItems.limit(limit);
+      query = query.limit(limit);
     }
     if (offset) {
-      allItems = allItems.skip(offset);
+      query = query.skip(offset);
     }
+
+    const allItems = await query.exec();
 
     res.status(200).json(allItems);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
