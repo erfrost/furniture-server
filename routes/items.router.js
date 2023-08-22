@@ -34,10 +34,10 @@ router.get("/", async (req, res) => {
     }
 
     if (limit) {
-      allItems = allItems.limit(limit);
+      allItems = await allItems.limit(limit);
     }
     if (offset) {
-      allItems = allItems.skip(offset);
+      allItems = await allItems.skip(offset);
     }
 
     const items = await allItems.exec();
