@@ -25,7 +25,7 @@ router.get("/search", async (req, res) => {
 
 router.get("/", async (req, res) => {
   try {
-    const allItems = await Item.find();
+    let allItems = await Item.find();
     const limit = parseInt(req.query.limit);
     const offset = parseInt(req.query.offset);
 
