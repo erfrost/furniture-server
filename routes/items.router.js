@@ -25,26 +25,28 @@ router.get("/search", async (req, res) => {
 
 router.get("/", async (req, res) => {
   try {
-    let allItems = await Item.find();
+    let query = Item.find();
     const limit = parseInt(req.query.limit);
     const offset = parseInt(req.query.offset);
 
-    if (!allItems.length) {
+    if (!query) {
       return res.status(400).json({ message: "Товаров не найдено" });
     }
     if (limit) {
-      allItems = await allItems.limit(limit);
+      query = query.limit(limit);
     }
     if (offset) {
-      allItems = await allItems.skip(offset);
+      query = query.skip(offset);
     }
 
-    const items = await allItems.exec();
+    const items = await query.exec();
 
     res.status(200).json(items);
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: "Internal server error", error: error });
+    res
+      .status(500)
+      .json({ message: "Внутренняя ошибка сервера", error: error });
   }
 });
 
