@@ -19,7 +19,7 @@ app.use("/images", express.static(`../${__dirname}/images`));
 
 mongoose.set("strictQuery", false);
 
-createAdmin();//
+createAdmin();
 
 app.use("/api", routes);
 
