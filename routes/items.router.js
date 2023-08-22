@@ -26,10 +26,9 @@ router.get("/search", async (req, res) => {
 router.get("/", async (req, res) => {
   try {
     const allItems = await Item.find();
-    return res.status(200).json(allItems);
     const limit = parseInt(req.query.limit);
     const offset = parseInt(req.query.offset);
-
+    return res.status(200).json(limit);
     if (!allItems.length) {
       return res.status(400).json({ message: "Товаров не найдено" });
     }
