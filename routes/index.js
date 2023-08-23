@@ -52,7 +52,7 @@ router.get("/categories/search", async (req, res) => {
 router.get("/subcategories/:category_id", async (req, res) => {
   try {
     const categoryId = req.params.category_id;
-
+    console.log(categoryId);
     const category = await Category.findOne({ _id: categoryId });
     if (!category) {
       return res.status(404).json({ message: "Категория не найдена" });
