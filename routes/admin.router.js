@@ -210,7 +210,7 @@ router.post("/categories", upload.any(), async (req, res) => {
     const file = req.files[0];
 
     const { title } = req.body;
-
+    console.log(file, title);
     if (!title || !file) {
       return res.status(404).json({ message: "Поля не должны быть пустыми" });
     }
