@@ -126,7 +126,7 @@ router.get("/by_subcategory/:subcategory_id", async (req, res) => {
 router.get("/by_itemId/:item_id", async (req, res) => {
   try {
     const itemId = req.params.item_id;
-
+    console.log(itemId);
     if (!itemId) {
       return res.status(404).json({ message: "Проверьте параметры запроса" });
     }
@@ -138,6 +138,7 @@ router.get("/by_itemId/:item_id", async (req, res) => {
 
     res.status(200).json(currentItem);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: "Internal server error" });
   }
 });

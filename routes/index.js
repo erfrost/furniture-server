@@ -52,7 +52,7 @@ router.get("/categories/search", async (req, res) => {
 router.get("/subcategories/:category_id", async (req, res) => {
   try {
     const categoryId = req.params.category_id;
-    console.log(categoryId);
+
     const category = await Category.findOne({ _id: categoryId });
     if (!category) {
       return res.status(404).json({ message: "Категория не найдена" });
@@ -63,12 +63,10 @@ router.get("/subcategories/:category_id", async (req, res) => {
     const subcategories = await Subcategory.find({
       _id: { $in: subcategoriesIdArray },
     });
-    if (!subcategories || !subcategories.length) {
-      return res.status(404).json({ message: "Подкатегорий не найдено" });
-    }
 
     res.status(200).json(subcategories);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: "Internal server error" });
   }
 });

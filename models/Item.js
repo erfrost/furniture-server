@@ -21,6 +21,10 @@ const schema = new Schema({
     type: Number,
     required: true,
   },
+  discountPrice: {
+    type: Number,
+    required: true,
+  },
   photo_names: {
     type: Array,
     required: true,

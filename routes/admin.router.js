@@ -87,6 +87,7 @@ router.post("/items", upload.any(), async (req, res) => {
       title,
       description,
       price,
+      discountPrice: price,
       category_id,
       subcategory_id,
       specifications: JSON.parse(specifications),
@@ -111,6 +112,7 @@ router.post("/items", upload.any(), async (req, res) => {
 
     res.status(200).json({ message: "Товар успешно добавлен" });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
@@ -332,7 +334,7 @@ router.post("/subcategories", upload.any(), async (req, res) => {
     if (!title || !category_id) {
       return res.status(404).json({ message: "Поля не должны быть пустыми" });
     }
-    if (title.length > 1000) {
+    if (title.length > 100) {
       return res.status(404).json({ message: "Превышен лимит по символам" });
     }
     if (!titleValidate(title)) {
@@ -344,6 +346,16 @@ router.post("/subcategories", upload.any(), async (req, res) => {
     const category = await Category.findOne({ _id: category_id });
     if (!category) {
       return res.status(404).json({ message: "Категория не найдена" });
+    }
+    if (category.subcategories.length) {
+      for (const id of category.subcategories) {
+        const currentSubcategory = await Subcategory.findOne({ _id: id });
+        if (currentSubcategory.title === title) {
+          return res.status(404).json({
+            message: "Подкатегория с таким названием уже существует",
+          });
+        }
+      }
     }
 
     const newSubcategory = await Subcategory.create({
@@ -357,6 +369,7 @@ router.post("/subcategories", upload.any(), async (req, res) => {
 
     res.status(200).json({ message: "Подкатегория успешно добавлена" });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
@@ -518,6 +531,29 @@ router.post("/uploadImage", upload.any(), async (req, res) => {
     });
 
     res.status(200).json(files.map((img) => img.filename));
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+router.post("/discount", async (req, res) => {
+  try {
+    const { itemId, discountPrice } = req.body;
+    console.log(discountPrice);
+    if (!itemId || !discountPrice) {
+      return res.status(404).json({ message: "Поля не должны быть пустыми" });
+    }
+
+    const currentItem = await Item.findOne({ _id: itemId });
+    if (!currentItem) {
+      return res.status(404).json({ message: "Товар не найден" });
+    }
+
+    currentItem.discountPrice = discountPrice;
+
+    await currentItem.save();
+
+    res.status(200).json({ message: "Скидка успешно добавлена" });
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
   }
