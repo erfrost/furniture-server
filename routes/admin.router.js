@@ -147,11 +147,6 @@ router.patch("/items/:item_id", upload.any(), async (req, res) => {
     ) {
       return res.status(404).json({ message: "Превышен лимит по символам" });
     }
-    if (await Item.findOne({ title: req.body.title })) {
-      return res
-        .status(404)
-        .json({ message: "Товар с таким название уже существует" });
-    }
 
     const currentItem = await Item.findOne({ _id: req.params.item_id });
     if (!currentItem) {
