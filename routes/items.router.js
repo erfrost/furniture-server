@@ -23,6 +23,20 @@ router.get("/search", async (req, res) => {
   }
 });
 
+router.get("/discount", async (req, res) => {
+  try {
+    const allItems = await Item.find();
+    console.log(allItems);
+    const discountItems = allItems.filter(
+      (item) => item.price !== item.discountPrice
+    );
+
+    res.status(200).json(discountItems);
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 router.get("/", async (req, res) => {
   try {
     let query = Item.find();
