@@ -57,7 +57,7 @@ router.post("/items", upload.any(), async (req, res) => {
     ) {
       return res.status(404).json({ message: "Поля не должны быть пустыми" });
     }
-    if (title.length > 1000 || description.length > 100) {
+    if (title.length > 100 || description.length > 1000) {
       return res.status(404).json({ message: "Превышен лимит по символам" });
     }
     if (!titleValidate(title)) {
@@ -142,8 +142,8 @@ router.patch("/items/:item_id", upload.any(), async (req, res) => {
       req.body.specifications = JSON.parse(specifications);
     }
     if (
-      (title && title.length > 1000) ||
-      (description && description.length > 100)
+      (title && title.length > 100) ||
+      (description && description.length > 1000)
     ) {
       return res.status(404).json({ message: "Превышен лимит по символам" });
     }
@@ -211,7 +211,7 @@ router.post("/categories", upload.any(), async (req, res) => {
     if (!title || !file) {
       return res.status(404).json({ message: "Поля не должны быть пустыми" });
     }
-    if (title.length > 1000) {
+    if (title.length > 100) {
       return res.status(404).json({ message: "Превышен лимит по символам" });
     }
     if (!titleValidate(title)) {
@@ -254,7 +254,7 @@ router.patch("/categories/:category_id", upload.any(), async (req, res) => {
     }
     const { title } = req.body;
 
-    if (title.length > 1000) {
+    if (title.length > 100) {
       return res.status(404).json({ message: "Превышен лимит по символам" });
     }
     if (!titleValidate(title)) {
@@ -387,7 +387,7 @@ router.patch(
       if (!title) {
         return res.status(404).json({ message: "Поля не должны быть пустыми" });
       }
-      if (title.length > 1000) {
+      if (title.length > 100) {
         return res.status(404).json({ message: "Превышен лимит по символам" });
       }
       if (!titleValidate(title)) {
