@@ -470,8 +470,20 @@ router.delete("/subcategories/:subcategory_id", async (req, res) => {
 router.post("/news", upload.any(), async (req, res) => {
   try {
     const file = req.files;
+    const { title, description } = req.body;
     if (!file.length) {
       return res.status(404).json({ message: "Изображение не загружено" });
+    }
+    if (!title || !description) {
+      return res.status(404).json({ message: "Поля не должны быть пустыми" });
+    }
+    if (title.length > 100 || description.length < 1000) {
+      return res.status(404).json({ message: "Превышен лимит по символам" });
+    }
+    if (!titleValidate(title)) {
+      return res.status(404).json({
+        message: "Название подкатегории содержит недопустимые символы",
+      });
     }
 
     await Image.create({
@@ -479,6 +491,8 @@ router.post("/news", upload.any(), async (req, res) => {
     });
 
     await News.create({
+      title,
+      description,
       photo_name: file[0].filename,
     });
 

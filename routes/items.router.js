@@ -7,8 +7,10 @@ const Subcategory = require("../models/Subcategory");
 router.get("/search", async (req, res) => {
   try {
     const searchText = req.query.search;
+    const limit = parseInt(req.query.limit);
+    const offset = parseInt(req.query.offset);
 
-    let filteredItems = [];
+    let query = [];
 
     if (searchText) {
       const regex = new RegExp(searchText, "i");
@@ -16,8 +18,16 @@ router.get("/search", async (req, res) => {
         title: regex,
       }).exec();
     }
+    if (limit) {
+      query = query.limit(limit);
+    }
+    if (offset) {
+      query = query.skip(offset);
+    }
 
-    res.status(200).json(filteredItems);
+    const items = await query.exec();
+
+    res.status(200).json(items);
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
   }
@@ -26,12 +36,20 @@ router.get("/search", async (req, res) => {
 router.get("/discount", async (req, res) => {
   try {
     const allItems = await Item.find();
-    console.log(allItems);
-    const discountItems = allItems.filter(
-      (item) => item.price !== item.discountPrice
-    );
+    const limit = parseInt(req.query.limit);
+    const offset = parseInt(req.query.offset);
 
-    res.status(200).json(discountItems);
+    let query = allItems.filter((item) => item.price > item.discountPrice);
+    if (limit) {
+      query = query.limit(limit);
+    }
+    if (offset) {
+      query = query.skip(offset);
+    }
+
+    const items = await query.exec();
+
+    res.status(200).json(items);
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
   }
@@ -42,10 +60,7 @@ router.get("/", async (req, res) => {
     let query = Item.find();
     const limit = parseInt(req.query.limit);
     const offset = parseInt(req.query.offset);
-
-    if (!query) {
-      return res.status(400).json({ message: "Товаров не найдено" });
-    }
+    console.log(limit, offset);
     if (limit) {
       query = query.limit(limit);
     }
