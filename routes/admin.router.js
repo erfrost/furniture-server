@@ -471,6 +471,7 @@ router.post("/news", upload.any(), async (req, res) => {
   try {
     const file = req.files;
     const { title, description } = req.body;
+    console.log(title, description);
     if (!file.length) {
       return res.status(404).json({ message: "Изображение не загружено" });
     }
