@@ -86,9 +86,6 @@ router.get("/subcategories/:category_id", async (req, res) => {
 router.get("/news", async (req, res) => {
   try {
     const allNews = await News.find();
-    if (!allNews || !allNews.length) {
-      return res.status(404).json({ message: "Новостей не найдено" });
-    }
 
     res.status(200).json(allNews);
   } catch (error) {
