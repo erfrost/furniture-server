@@ -488,7 +488,7 @@ router.post("/news", upload.any(), async (req, res) => {
     }
 
     await Image.create({
-      name: file[0].filename,
+      photo_name: file[0].filename,
     });
 
     await News.create({
