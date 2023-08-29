@@ -35,23 +35,31 @@ router.get("/search", async (req, res) => {
 
 router.get("/discount", async (req, res) => {
   try {
-    const allItems = await Item.find();
     const limit = parseInt(req.query.limit);
     const offset = parseInt(req.query.offset);
 
-    let query = allItems.filter((item) => item.price > item.discountPrice);
-    if (limit) {
-      query = query.limit(limit);
-    }
-    if (offset) {
-      query = query.skip(offset);
+    const aggregationPipeline = [
+      {
+        $match: {
+          $expr: { $gt: ["$price", "$discountPrice"] },
+        },
+      },
+    ];
+
+    if (!isNaN(offset)) {
+      aggregationPipeline.push({ $skip: offset });
     }
 
-    const items = await query.exec();
+    if (!isNaN(limit)) {
+      aggregationPipeline.push({ $limit: limit });
+    }
+
+    const items = await Item.aggregate(aggregationPipeline);
 
     res.status(200).json(items);
   } catch (error) {
-    res.status(500).json({ message: "Internal server error", error });
+    console.log(error);
+    res.status(500).json({ message: "Internal server error" });
   }
 });
 
