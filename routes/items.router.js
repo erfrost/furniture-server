@@ -22,7 +22,7 @@ router.get("/search", async (req, res) => {
     query = await Item.find({
       title: regex,
     }).exec();
-    return res.status(200).json(query);
+    console.log(query);
     if (limit) {
       query = query.limit(limit);
     }
@@ -30,10 +30,9 @@ router.get("/search", async (req, res) => {
       query = query.skip(offset);
     }
 
-    const items = await query.exec();
-
-    res.status(200).json(items);
+    res.status(200).json(query);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
