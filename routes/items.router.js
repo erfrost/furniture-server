@@ -22,7 +22,7 @@ router.get("/search", async (req, res) => {
     query = await Item.find({
       title: regex,
     }).exec();
-
+    return res.status(200).json(query);
     if (limit) {
       query = query.limit(limit);
     }
