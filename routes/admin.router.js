@@ -103,10 +103,10 @@ router.post("/items", upload.any(), async (req, res) => {
         name: img.filename,
       });
 
-      newImages.push(currentImage.name); // Добавляем ID созданного изображения в массив newImages
+      newImages.push(currentImage.name);
     }
 
-    newItem.photo_names = newImages; // Присваиваем массив newImages полю photo_id объекта newItem
+    newItem.photo_names = newImages;
 
     await newItem.save();
 
@@ -470,7 +470,7 @@ router.delete("/subcategories/:subcategory_id", async (req, res) => {
 router.post("/news", upload.any(), async (req, res) => {
   try {
     const file = req.files;
-    const { title, description } = req.body;
+    const { title, description, categoryId, subcategoryId } = req.body;
     console.log(title, description);
     if (!file.length) {
       return res.status(404).json({ message: "Изображение не загружено" });

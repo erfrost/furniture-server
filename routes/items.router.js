@@ -12,12 +12,17 @@ router.get("/search", async (req, res) => {
 
     let query = [];
 
-    if (searchText) {
-      const regex = new RegExp(searchText, "i");
-      filteredItems = await Item.find({
-        title: regex,
-      }).exec();
+    if (!searchText) {
+      return res
+        .status(404)
+        .json({ message: "Проверьте параметры запроса и повторите попытку" });
     }
+
+    const regex = new RegExp(searchText, "i");
+    query = await Item.find({
+      title: regex,
+    }).exec();
+
     if (limit) {
       query = query.limit(limit);
     }
