@@ -14,6 +14,12 @@ const schema = new Schema(
       type: String,
       required: true,
     },
+    category_id: {
+      type: String,
+    },
+    subcategory_id: {
+      type: String,
+    },
   },
   {
     timestamps: true,

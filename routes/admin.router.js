@@ -470,8 +470,13 @@ router.delete("/subcategories/:subcategory_id", async (req, res) => {
 router.post("/news", upload.any(), async (req, res) => {
   try {
     const file = req.files;
-    const { title, description, categoryId, subcategoryId } = req.body;
-    console.log(title, description);
+    const {
+      title,
+      description,
+      categoryId: category_id,
+      subcategoryId: subcategory_id,
+    } = req.body;
+    // console.log(title, description);
     if (!file.length) {
       return res.status(404).json({ message: "Изображение не загружено" });
     }
@@ -491,11 +496,21 @@ router.post("/news", upload.any(), async (req, res) => {
       name: file[0].filename,
     });
 
-    await News.create({
-      title,
-      description,
-      photo_name: file[0].filename,
-    });
+    if (category_id) {
+      await News.create({
+        title,
+        description,
+        photo_name: file[0].filename,
+        category_id,
+      });
+    } else if (subcategory_id) {
+      await News.create({
+        title,
+        description,
+        photo_name: file[0].filename,
+        subcategory_id,
+      });
+    }
 
     res.status(200).json({ message: "Новость успешно добавлена" });
   } catch (error) {
