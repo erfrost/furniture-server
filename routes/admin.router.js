@@ -480,7 +480,7 @@ router.post("/news", upload.any(), async (req, res) => {
     if (!file.length) {
       return res.status(404).json({ message: "Изображение не загружено" });
     }
-    if (!title || !description) {
+    if (!title || !description || (!category_id && !subcategory_id)) {
       return res.status(404).json({ message: "Поля не должны быть пустыми" });
     }
     if (title.length > 100 || description.length > 1000) {
