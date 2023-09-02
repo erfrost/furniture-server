@@ -6,7 +6,6 @@ const Subcategory = require("../models/Subcategory");
 
 router.get("/search", async (req, res) => {
   try {
-    console.log(req.query);
     const searchText = req.query.search;
     const limit = parseInt(req.query.limit);
     const offset = parseInt(req.query.offset);
@@ -35,11 +34,9 @@ router.get("/search", async (req, res) => {
     }
 
     const items = await Item.aggregate(aggregationPipeline);
-    console.log(items);
 
     res.status(200).json(items);
   } catch (error) {
-    console.log(error);
     res.status(500).json({ message: "Внутренняя ошибка сервера" });
   }
 });
