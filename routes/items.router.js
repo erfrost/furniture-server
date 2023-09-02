@@ -6,34 +6,41 @@ const Subcategory = require("../models/Subcategory");
 
 router.get("/search", async (req, res) => {
   try {
+    console.log(req.query);
     const searchText = req.query.search;
     const limit = parseInt(req.query.limit);
     const offset = parseInt(req.query.offset);
 
-    let query = [];
+    let aggregationPipeline = [];
 
     if (!searchText) {
-      return res
-        .status(404)
-        .json({ message: "Проверьте параметры запроса и повторите попытку" });
+      return res.status(404).json({
+        message: "Проверьте параметры запроса и повторите попытку",
+      });
     }
 
     const regex = new RegExp(searchText, "i");
-    query = await Item.find({
-      title: regex,
-    }).exec();
-    console.log(query);
-    if (limit) {
-      query = query.limit(limit);
-    }
-    if (offset) {
-      query = query.skip(offset);
+    aggregationPipeline.push({
+      $match: {
+        title: regex,
+      },
+    });
+
+    if (!isNaN(offset)) {
+      aggregationPipeline.push({ $skip: offset });
     }
 
-    res.status(200).json(query);
+    if (!isNaN(limit)) {
+      aggregationPipeline.push({ $limit: limit });
+    }
+
+    const items = await Item.aggregate(aggregationPipeline);
+    console.log(items);
+
+    res.status(200).json(items);
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({ message: "Внутренняя ошибка сервера" });
   }
 });
 
