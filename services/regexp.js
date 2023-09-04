@@ -16,4 +16,4 @@ const passwordValidate = (password) => {
   return regex.test(password);
 };
 
-module.exports = { titleValidate, descriptionValidate, passwordValidate };
+module.exports = { passwordValidate };
