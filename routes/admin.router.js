@@ -310,7 +310,7 @@ router.post("/subcategories", upload.any(), async (req, res) => {
     if (category.subcategories.length) {
       for (const id of category.subcategories) {
         const currentSubcategory = await Subcategory.findOne({ _id: id });
-        if (currentSubcategory.title === title) {
+        if (currentSubcategory?.title === title) {
           return res.status(404).json({
             message: "Подкатегория с таким названием уже существует",
           });
