@@ -23,11 +23,6 @@ router.post("/", async (req, res) => {
     if (name.length > 50 || text.length > 1000) {
       return res.status(404).json({ message: "Превышен лимит по символам" });
     }
-    if (!titleValidate(name) || !descriptionValidate(text)) {
-      return res.status(404).json({
-        message: "Имя или текст отзыва содержат недопустимые символы",
-      });
-    }
     await Feedback.create({
       name,
       text,

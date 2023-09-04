@@ -60,16 +60,6 @@ router.post("/items", upload.any(), async (req, res) => {
     if (title.length > 100 || description.length > 1000) {
       return res.status(404).json({ message: "Превышен лимит по символам" });
     }
-    if (!titleValidate(title)) {
-      return res
-        .status(404)
-        .json({ message: "Название товара содержит недопустимые символы" });
-    }
-    if (!descriptionValidate(description)) {
-      return res
-        .status(404)
-        .json({ message: "Описание товара содержит недопустимые символы" });
-    }
     const subcategory = await Subcategory.findOne({ _id: subcategory_id });
     if (!subcategory) {
       return res.status(404).json({ message: "Подкатегория не найдена" });
@@ -152,18 +142,8 @@ router.patch("/items/:item_id", upload.any(), async (req, res) => {
     if (!currentItem) {
       return res.status(404).json({ message: "Товар не найден" });
     }
-    if (title && !titleValidate(title)) {
-      return res
-        .status(404)
-        .json({ message: "Название товара содержит недопустимые символы" });
-    }
-    if (description && !descriptionValidate(description)) {
-      return res
-        .status(404)
-        .json({ message: "Описание товара содержит недопустимые символы" });
-    }
 
-    const newItem = await currentItem.updateOne(req.body);
+    await currentItem.updateOne(req.body);
 
     res.status(200).json({ message: "Товар успешно обновлен" });
   } catch (error) {
@@ -214,11 +194,6 @@ router.post("/categories", upload.any(), async (req, res) => {
     if (title.length > 100) {
       return res.status(404).json({ message: "Превышен лимит по символам" });
     }
-    if (!titleValidate(title)) {
-      return res
-        .status(404)
-        .json({ message: "Название категории содержит недопустимые символы" });
-    }
     if (await Category.findOne({ title })) {
       return res
         .status(404)
@@ -256,11 +231,6 @@ router.patch("/categories/:category_id", upload.any(), async (req, res) => {
 
     if (title.length > 100) {
       return res.status(404).json({ message: "Превышен лимит по символам" });
-    }
-    if (!titleValidate(title)) {
-      return res
-        .status(404)
-        .json({ message: "Название категории содержит недопустимые символы" });
     }
     if (await Category.findOne({ title })) {
       return res
@@ -332,11 +302,6 @@ router.post("/subcategories", upload.any(), async (req, res) => {
     if (title.length > 100) {
       return res.status(404).json({ message: "Превышен лимит по символам" });
     }
-    if (!titleValidate(title)) {
-      return res.status(404).json({
-        message: "Название подкатегории содержит недопустимые символы",
-      });
-    }
 
     const category = await Category.findOne({ _id: category_id });
     if (!category) {
@@ -389,11 +354,6 @@ router.patch(
       }
       if (title.length > 100) {
         return res.status(404).json({ message: "Превышен лимит по символам" });
-      }
-      if (!titleValidate(title)) {
-        return res.status(404).json({
-          message: "Название подкатегории содержит недопустимые символы",
-        });
       }
       if (await Subcategory.findOne({ title })) {
         return res
@@ -485,11 +445,6 @@ router.post("/news", upload.any(), async (req, res) => {
     }
     if (title.length > 100 || description.length > 1000) {
       return res.status(404).json({ message: "Превышен лимит по символам" });
-    }
-    if (!titleValidate(title)) {
-      return res.status(404).json({
-        message: "Название подкатегории содержит недопустимые символы",
-      });
     }
 
     await Image.create({
