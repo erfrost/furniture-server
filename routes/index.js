@@ -39,20 +39,20 @@ router.get("/categories", async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
-router.get("/categories/search", async (req, res) => {
+router.get("/subcategories/search", async (req, res) => {
   try {
     const searchText = req.query.search;
-    console.log(searchText);
-    let filteredCategories = [];
+
+    let filteredSubcategories = [];
 
     if (searchText) {
       const regex = new RegExp(searchText, "i");
-      filteredCategories = await Category.find({
+      filteredSubcategories = await Subcategory.find({
         title: regex,
       }).exec();
     }
-    console.log(filteredCategories);
-    res.status(200).json(filteredCategories);
+
+    res.status(200).json(filteredSubcategories);
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
   }
