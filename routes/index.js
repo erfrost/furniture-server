@@ -33,9 +33,6 @@ router.get("/categoriesAndSubcategories", async (req, res) => {
 router.get("/categories", async (req, res) => {
   try {
     const categories = await Category.find();
-    if (!categories || !categories.length) {
-      return res.status(404).json({ message: "Категорий не найдено" });
-    }
 
     res.status(200).json(categories);
   } catch (error) {
