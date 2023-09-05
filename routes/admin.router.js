@@ -57,7 +57,7 @@ router.post("/items", upload.any(), async (req, res) => {
     ) {
       return res.status(404).json({ message: "Поля не должны быть пустыми" });
     }
-    if (title.length > 100 || description.length > 1000) {
+    if (title.length > 100 || description.length > 2000) {
       return res.status(404).json({ message: "Превышен лимит по символам" });
     }
     const subcategory = await Subcategory.findOne({ _id: subcategory_id });
@@ -133,7 +133,7 @@ router.patch("/items/:item_id", upload.any(), async (req, res) => {
     }
     if (
       (title && title.length > 100) ||
-      (description && description.length > 1000)
+      (description && description.length > 2000)
     ) {
       return res.status(404).json({ message: "Превышен лимит по символам" });
     }
@@ -416,7 +416,7 @@ router.post("/news", upload.any(), async (req, res) => {
     if (!title || !description || (!category_id && !subcategory_id)) {
       return res.status(404).json({ message: "Поля не должны быть пустыми" });
     }
-    if (title.length > 100 || description.length > 1000) {
+    if (title.length > 100 || description.length > 2000) {
       return res.status(404).json({ message: "Превышен лимит по символам" });
     }
 

@@ -20,7 +20,7 @@ router.post("/", async (req, res) => {
     if (!name || !text) {
       return res.status(400).json({ message: "Не все поля поля заполнены" });
     }
-    if (name.length > 50 || text.length > 1000) {
+    if (name.length > 50 || text.length > 2000) {
       return res.status(404).json({ message: "Превышен лимит по символам" });
     }
     await Feedback.create({
