@@ -6,10 +6,6 @@ const schema = new Schema({
     required: true,
     unique: true,
   },
-  photo_name: {
-    type: String,
-    required: true,
-  },
   category_id: {
     type: String,
     required: true,
