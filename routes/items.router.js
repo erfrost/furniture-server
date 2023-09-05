@@ -191,6 +191,7 @@ router.get("/by_itemId/:item_id", async (req, res) => {
 router.get("/favorites", async (req, res) => {
   try {
     const { itemIds } = req.body;
+    return res.status(200).json(itemIds);
     if (!itemIds.length) {
       res.status(200).json([]);
     } else {
