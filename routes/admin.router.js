@@ -283,18 +283,8 @@ router.delete("/categories/:category_id", async (req, res) => {
 });
 
 //создание подкатегории
-router.post("/subcategories", upload.any(), async (req, res) => {
+router.post("/subcategories", async (req, res) => {
   try {
-    const file = req.files;
-
-    if (!file.length) {
-      return res.status(404).json({ message: "Изображение не загружено" });
-    } else {
-      await Image.create({
-        name: file[0].filename,
-      });
-    }
-
     const { title, category_id } = req.body;
     if (!title || !category_id) {
       return res.status(404).json({ message: "Поля не должны быть пустыми" });
@@ -320,7 +310,6 @@ router.post("/subcategories", upload.any(), async (req, res) => {
 
     const newSubcategory = await Subcategory.create({
       title,
-      photo_name: file[0].filename,
       category_id,
     });
     category.subcategories.push(newSubcategory._id);
@@ -335,59 +324,45 @@ router.post("/subcategories", upload.any(), async (req, res) => {
 });
 
 //обновление подкатегории
-router.patch(
-  "/subcategories/:subcategory_id",
-  upload.any(),
-  async (req, res) => {
-    try {
-      const file = req.files;
-      if (file.length) {
-        await Image.create({
-          name: file[0].filename,
-        });
-      }
+router.patch("/subcategories/:subcategory_id", async (req, res) => {
+  try {
+    const { title } = req.body;
 
-      const { title } = req.body;
-
-      if (!title) {
-        return res.status(404).json({ message: "Поля не должны быть пустыми" });
-      }
-      if (title.length > 100) {
-        return res.status(404).json({ message: "Превышен лимит по символам" });
-      }
-      if (await Subcategory.findOne({ title })) {
-        return res
-          .status(404)
-          .json({ message: "Подкатегория с таким названием уже существует" });
-      }
-      if (await Subcategory.findOne({ title })) {
-        return res
-          .status(404)
-          .json({ message: "Подкатегория с таким названием уже существует" });
-      }
-
-      const currentSubcategory = await Subcategory.findOne({
-        _id: req.params.subcategory_id,
-      });
-      if (!currentSubcategory) {
-        return res
-          .status(404)
-          .json({ message: "Подкатегория не найдена не найден" });
-      }
-
-      await currentSubcategory.updateOne({
-        title,
-        photo_name: file.length
-          ? file[0].filename
-          : currentSubcategory.photo_name,
-      });
-
-      res.status(200).json({ message: "Категория успешно обновлена" });
-    } catch (error) {
-      res.status(500).json({ message: "Internal server error" });
+    if (!title) {
+      return res.status(404).json({ message: "Поля не должны быть пустыми" });
     }
+    if (title.length > 100) {
+      return res.status(404).json({ message: "Превышен лимит по символам" });
+    }
+    if (await Subcategory.findOne({ title })) {
+      return res
+        .status(404)
+        .json({ message: "Подкатегория с таким названием уже существует" });
+    }
+    if (await Subcategory.findOne({ title })) {
+      return res
+        .status(404)
+        .json({ message: "Подкатегория с таким названием уже существует" });
+    }
+
+    const currentSubcategory = await Subcategory.findOne({
+      _id: req.params.subcategory_id,
+    });
+    if (!currentSubcategory) {
+      return res
+        .status(404)
+        .json({ message: "Подкатегория не найдена не найден" });
+    }
+
+    await currentSubcategory.updateOne({
+      title,
+    });
+
+    res.status(200).json({ message: "Категория успешно обновлена" });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
   }
-);
+});
 
 //удаление подкатегории
 router.delete("/subcategories/:subcategory_id", async (req, res) => {
@@ -418,8 +393,6 @@ router.delete("/subcategories/:subcategory_id", async (req, res) => {
     await category.save();
 
     await currentSubcategory.deleteOne();
-
-    await deleteImage([currentSubcategory.photo_name]);
 
     res.status(200).json({ message: "Подкатегория успешно удалена" });
   } catch (error) {
