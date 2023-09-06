@@ -188,11 +188,11 @@ router.get("/by_itemId/:item_id", async (req, res) => {
   }
 });
 
-router.get("/favorites", async (req, res) => {
+router.post("/favorites", async (req, res) => {
   try {
     const { itemIds } = req.body;
-    return res.status(200).json(itemIds);
-    if (!itemIds.length) {
+    console.log(itemIds);
+    if (!itemIds || !itemIds.length) {
       res.status(200).json([]);
     } else {
       const items = await Item.find({ _id: { $in: itemIds } });
