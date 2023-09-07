@@ -188,7 +188,7 @@ router.get("/by_itemId/:item_id", async (req, res) => {
   }
 });
 
-router.post("/favorites", async (req, res) => {
+router.post("/by_ids", async (req, res) => {
   try {
     const { itemIds } = req.body;
     console.log(itemIds);

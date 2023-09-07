@@ -42,7 +42,7 @@ router.get("/categories", async (req, res) => {
 router.get("/subcategories/search", async (req, res) => {
   try {
     const searchText = req.query.search;
-
+    console.log(searchText);
     let filteredSubcategories = [];
 
     if (searchText) {
@@ -50,10 +50,12 @@ router.get("/subcategories/search", async (req, res) => {
       filteredSubcategories = await Subcategory.find({
         title: regex,
       }).exec();
+      console.log(filteredSubcategories);
     }
 
     res.status(200).json(filteredSubcategories);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
