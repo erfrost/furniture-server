@@ -12,6 +12,37 @@ const {
 } = require("../services/tokenService");
 const { passwordValidate } = require("../services/regexp");
 
+router.post("/adminAuth", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const currentUser = await User.findOne({ email });
+
+    if (!currentUser) {
+      return res.status(201).json({
+        message: "Неверное имя пользователя или пароль",
+      });
+    }
+
+    const isPasswordEqual = await bcrypt.compare(
+      password,
+      currentUser.password
+    );
+    if (!isPasswordEqual) {
+      return res.status(201).json({
+        message: "Неверное имя пользователя или пароль",
+      });
+    }
+
+    const tokens = generate({ _id: currentUser._id }, false);
+    await save(currentUser._id, tokens.refreshToken, tokens.autoAuthToken);
+
+    res.status(200).json({ message: "Добро пожаловать!" });
+  } catch {
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 router.post("/signUp", [
   check("email", "Некорректный email").isEmail(),
   check("password", "Пароль должен содержать минимум 8 символов").isLength({
@@ -97,44 +128,41 @@ router.post("/signInWithCookie", async (req, res) => {
   }
 });
 
-router.post("/signInWithPassword", [
-  check("login", "Некорректный email").isEmail(),
-  async (req, res) => {
-    try {
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return res.status(400).json({ message: "Некорректный email" });
-      }
-
-      const { email, password, autoAuth } = req.body;
-
-      const currentUser = await User.findOne({ email });
-
-      if (!currentUser) {
-        return res.status(201).json({
-          message: "Неверное имя пользователя или пароль",
-        });
-      }
-
-      const isPasswordEqual = await bcrypt.compare(
-        password,
-        currentUser.password
-      );
-      if (!isPasswordEqual) {
-        return res.status(201).json({
-          message: "Неверное имя пользователя или пароль",
-        });
-      }
-
-      const tokens = generate({ _id: currentUser._id }, autoAuth);
-      await save(currentUser._id, tokens.refreshToken, tokens.autoAuthToken);
-
-      res.status(200).json({ ...tokens, userId: currentUser._id });
-    } catch {
-      res.status(500).json({ message: "Internal server error" });
+router.post("/signInWithPassword", async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ message: "Некорректный email" });
     }
-  },
-]);
+
+    const { email, password, autoAuth } = req.body;
+
+    const currentUser = await User.findOne({ email });
+
+    if (!currentUser) {
+      return res.status(201).json({
+        message: "Неверное имя пользователя или пароль",
+      });
+    }
+
+    const isPasswordEqual = await bcrypt.compare(
+      password,
+      currentUser.password
+    );
+    if (!isPasswordEqual) {
+      return res.status(201).json({
+        message: "Неверное имя пользователя или пароль",
+      });
+    }
+
+    const tokens = generate({ _id: currentUser._id }, autoAuth);
+    await save(currentUser._id, tokens.refreshToken, tokens.autoAuthToken);
+
+    res.status(200).json({ ...tokens, userId: currentUser._id });
+  } catch {
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
 
 function isTokenInvalid(data, dbToken) {
   return !data || !dbToken || data._id !== dbToken?.user?.toString();

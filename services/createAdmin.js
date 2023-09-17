@@ -4,9 +4,6 @@ const User = require("../models/User");
 
 const createAdmin = async () => {
   try {
-    const isExisting = await User.find();
-    if (isExisting.length) return;
-
     await User.create({
       email: config.adminLogin,
       password: await bcrypt.hash(config.adminPassword, 12),

@@ -11,7 +11,6 @@ const authMiddleware = require("../middleware/auth.middleware");
 const adminMiddleware = require("../middleware/admin.middleware");
 const Image = require("../models/Image");
 const deleteImage = require("../services/deleteImage");
-const { titleValidate, descriptionValidate } = require("../services/regexp");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
