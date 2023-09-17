@@ -37,7 +37,7 @@ router.post("/adminAuth", async (req, res) => {
     const tokens = generate({ _id: currentUser._id }, false);
     await save(currentUser._id, tokens.refreshToken, tokens.autoAuthToken);
 
-    res.status(200).json({ message: "Добро пожаловать!" });
+    res.status(200).json(tokens);
   } catch {
     res.status(500).json({ message: "Internal server error" });
   }
