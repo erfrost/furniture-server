@@ -11,6 +11,8 @@ const authMiddleware = require("../middleware/auth.middleware");
 const adminMiddleware = require("../middleware/admin.middleware");
 const Image = require("../models/Image");
 const deleteImage = require("../services/deleteImage");
+const Kitchen = require("../models/Kitchen");
+const KitchenWork = require("../models/KitchenWork");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -29,11 +31,11 @@ const upload = multer({
 });
 
 //создание товара
-router.post("/items", upload.any(), async (req, res) => {
+router.post("/items", adminMiddleware, upload.any(), async (req, res) => {
   try {
     const files = req.files;
 
-    if (!files.length) {
+    if (!files || !files.length) {
       return res.status(400).json({ message: "Изображения не были загружены" });
     }
 
@@ -56,7 +58,7 @@ router.post("/items", upload.any(), async (req, res) => {
     ) {
       return res.status(404).json({ message: "Поля не должны быть пустыми" });
     }
-    if (title.length > 100 || description.length > 512) {
+    if (title.length > 100 || description.length > 1024) {
       return res.status(404).json({ message: "Превышен лимит по символам" });
     }
     const subcategory = await Subcategory.findOne({ _id: subcategory_id });
@@ -101,7 +103,7 @@ router.post("/items", upload.any(), async (req, res) => {
 
     res.status(200).json({ message: "Товар успешно добавлен" });
   } catch (error) {
-    console.log(error);
+    console.log("error:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
@@ -125,14 +127,14 @@ router.patch("/items/:item_id", upload.any(), async (req, res) => {
       return res.status(404).json({ message: "Поля не должны быть пустыми" });
     }
 
-    const { title, description, specifications } = req.body;
+    const { title, description, specifications, photo_names } = req.body;
 
     if (specifications) {
       req.body.specifications = JSON.parse(specifications);
     }
     if (
       (title && title.length > 100) ||
-      (description && description.length > 512)
+      (description && description.length > 1024)
     ) {
       return res.status(404).json({ message: "Превышен лимит по символам" });
     }
@@ -141,6 +143,18 @@ router.patch("/items/:item_id", upload.any(), async (req, res) => {
     if (!currentItem) {
       return res.status(404).json({ message: "Товар не найден" });
     }
+
+    const prevImages = currentItem.photo_names;
+    const checkImages = prevImages.filter(
+      (item) => !photo_names.includes(item)
+    );
+    console.log(checkImages);
+
+    await Image.deleteMany({
+      name: { $in: checkImages },
+    });
+
+    await deleteImage(checkImages);
 
     await currentItem.updateOne(req.body);
 
@@ -173,6 +187,9 @@ router.delete("/items/:item_id", async (req, res) => {
 
     await currentItem.deleteOne();
 
+    await Image.deleteMany({
+      name: { $in: currentItem.photo_names },
+    });
     await deleteImage(currentItem.photo_names);
 
     res.status(200).json({ message: "Товар успешно удален" });
@@ -218,7 +235,7 @@ router.post("/categories", upload.any(), async (req, res) => {
 router.patch("/categories/:category_id", upload.any(), async (req, res) => {
   try {
     const file = req.files;
-    if (file.length) {
+    if (file && file.length) {
       await Image.create({
         name: file[0].filename,
       });
@@ -244,6 +261,9 @@ router.patch("/categories/:category_id", upload.any(), async (req, res) => {
     if (!currentCategory) {
       return res.status(404).json({ message: "Категория не найдена" });
     }
+
+    await Image.deleteOne({ name: currentCategory.photo_name });
+    await deleteImage([currentCategory.photo_name]);
 
     await currentCategory.updateOne({
       title,
@@ -274,6 +294,7 @@ router.delete("/categories/:category_id", async (req, res) => {
 
     currentCategory.deleteOne(req.body);
 
+    await Image.deleteOne({ name: currentCategory.photo_name });
     await deleteImage([currentCategory.photo_name]);
 
     res.status(200).json({ message: "Категория успешно удалена" });
@@ -409,7 +430,7 @@ router.post("/news", upload.any(), async (req, res) => {
       categoryId: category_id,
       subcategoryId: subcategory_id,
     } = req.body;
-    // console.log(title, description);
+
     if (!file.length) {
       return res.status(404).json({ message: "Изображение не загружено" });
     }
@@ -460,10 +481,11 @@ router.delete("/news/:news_id", async (req, res) => {
     if (!currentPost) {
       return res.status(404).json({ message: "Новость не найдена" });
     }
-    const photo_name = currentPost.photo_name;
+
+    await Image.deleteOne({ name: currentPost.photo_name });
+    await deleteImage([currentPost.photo_name]);
 
     await News.deleteOne({ _id: news_id });
-    await deleteImage([photo_name]);
 
     res.status(200).json({ message: "Новость успешно удалена" });
   } catch (error) {
@@ -471,24 +493,126 @@ router.delete("/news/:news_id", async (req, res) => {
   }
 });
 
-router.post("/uploadImage", upload.any(), async (req, res) => {
+router.post("/kitchen", upload.any(), async (req, res) => {
   try {
     const files = req.files;
+    const { title, description, specifications, advantages } = req.body;
 
-    if (!files) {
-      return res.status(400).json({ message: "Файл не был загружен" });
+    if (!files.length) {
+      return res.status(404).json({ message: "Изображение не загружено" });
     }
-    files.map(async (img) => {
-      await Image.create({
-        name: img.filename,
-      });
+    if (!title || !description || !specifications || !advantages) {
+      return res.status(404).json({ message: "Поля не должны быть пустыми" });
+    }
+    if (title.length > 100 || description.length > 1024) {
+      return res.status(404).json({ message: "Превышен лимит по символам" });
+    }
+
+    const newKitchen = await Kitchen.create({
+      title,
+      description,
+      specifications: JSON.parse(specifications),
+      advantages,
     });
 
-    res.status(200).json(files.map((img) => img.filename));
+    const newImages = [];
+    for (const img of files) {
+      const currentImage = await Image.create({
+        name: img.filename,
+      });
+
+      newImages.push(currentImage.name);
+    }
+
+    newKitchen.photo_names = newImages;
+
+    await newKitchen.save();
+
+    res.status(200).json({ message: "Кухня успешно добавлена" });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
+
+router.delete("/kitchen", async (req, res) => {
+  try {
+    const { kitchenId } = req.body;
+    console.log(kitchenId);
+    if (!kitchenId) {
+      return res.status(404).json({ message: "Поля не должны быть пустыми" });
+    }
+
+    const currentKitchen = await Kitchen.findOne({ _id: kitchenId });
+
+    if (!currentKitchen) {
+      return res.status(404).json({ message: "Кухня не найдена" });
+    }
+
+    currentImages = currentKitchen.photo_names;
+
+    currentImages.forEach(async (img) => {
+      await Image.deleteOne({ name: img });
+    });
+    await deleteImage(currentImages);
+
+    await Kitchen.deleteOne({ _id: kitchenId });
+
+    res.status(200).json({ message: "Кухня успешно удалена" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+router.patch("/kitchen/works", upload.any(), async (req, res) => {
+  try {
+    const files = req.files;
+    const { prevImages } = req.body;
+
+    const imagesToDelete = await KitchenWork.find({
+      photo_name: { $nin: JSON.parse(prevImages) },
+    });
+
+    await KitchenWork.deleteMany({
+      photo_name: { $nin: JSON.parse(prevImages) },
+    });
+
+    await deleteImage(imagesToDelete.map((item) => item.photo_name));
+
+    files.map(async (img) => {
+      await KitchenWork.create({
+        photo_name: img.filename,
+      });
+
+      await Image.create({ name: img.filename });
+    });
+
+    res.status(200).json({ message: "Фотографии успешно обновлены" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// router.post("/uploadImage", upload.any(), async (req, res) => {
+//   try {
+//     const files = req.files;
+
+//     if (!files) {
+//       return res.status(400).json({ message: "Файл не был загружен" });
+//     }
+//     files.map(async (img) => {
+//       await Image.create({
+//         name: img.filename,
+//       });
+//     });
+
+//     res.status(200).json(files.map((img) => img.filename));
+//   } catch (error) {
+//     res.status(500).json({ message: "Internal server error" });
+//   }
+// });
 
 router.post("/discount", async (req, res) => {
   try {

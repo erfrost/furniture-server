@@ -1,6 +1,7 @@
+const User = require("../models/User");
 const { validateAccess } = require("../services/tokenService");
 
-module.exports = (req, res, next) => {
+module.exports = async (req, res, next) => {
   if (req.method === "OPTIONS") return next();
 
   try {
