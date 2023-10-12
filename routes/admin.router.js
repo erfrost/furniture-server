@@ -16,7 +16,7 @@ const KitchenWork = require("../models/KitchenWork");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "images/");
+    cb(null, "../../images");
   },
   filename: (req, file, cb) => {
     const uniqueFilename = `${uuidv4()}-${slugify(file.originalname)}`;

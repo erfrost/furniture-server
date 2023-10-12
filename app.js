@@ -2,11 +2,9 @@ const express = require("express");
 const config = require("config");
 const cors = require("cors");
 const chalk = require("chalk");
-const path = require("path");
 const mongoose = require("mongoose");
 const routes = require("./routes");
 const bodyParser = require("body-parser");
-const createAdmin = require("./services/createAdmin");
 
 const app = express();
 
