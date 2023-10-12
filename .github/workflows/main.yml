@@ -17,4 +17,4 @@ jobs:
         username: root
         password: 1awj3vkosi
         port: 22
-        script: cd /root/server && git pull origin master && ( docker stop server || true ) && (docker rm server || true) && (docker build -t server . || true) && docker run -d -p 8080:8080 --name server --restart always server && docker image prune --filter="dangling=true" -f
+        script: cd /root/server && git pull origin master && ( docker stop server || true ) && (docker rm server || true) && (docker build -t server . || true) && docker run -d -p 8080:8080 -v /root/images:/images  --name server --restart always server && docker image prune --filter="dangling=true" -f
