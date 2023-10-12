@@ -3,18 +3,18 @@ name: Build and deploy to server
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   docker:
     name: Create docker image and push to registry, then start image
     runs-on: ubuntu-latest
-    steps: 
-    - name: Pull image and run container with .env variables from secrets
-      uses: appleboy/ssh-action@v0.1.6
-      with:
-        host: 31.184.254.214
-        username: root
-        password: 1awj3vkosi
-        port: 22
-        script: cd /root/server && git pull origin master && ( docker stop server || true ) && (docker rm server || true) && (docker build -t server . || true) && docker run -d -p 8080:8080 -v /root/images:/images  --name server --restart always server && docker image prune --filter="dangling=true" -f
+    steps:
+      - name: Pull image and run container with .env variables from secrets
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: 31.184.254.214
+          username: root
+          password: 1awj3vkosi
+          port: 22
+          script: cd /root/server && git pull origin master && ( docker stop server || true ) && (docker rm server || true) && (docker build -t server . || true) && docker run -d -p 8080:8080 -v /root/images:/images  --name server --restart always server && docker image prune --filter="dangling=true" -f
