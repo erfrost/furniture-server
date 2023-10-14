@@ -512,7 +512,7 @@ router.delete("/kitchen/:kitchen_id", async (req, res) => {
 router.patch("/kitchen/works", async (req, res) => {
   try {
     const { photo_names } = req.body;
-    return res.status(200).json({ images: photo_names });
+    // return res.status(200).json({ images: photo_names });
     photo_names.map(async (img) => {
       const isExists = await KitchenWork.findOne({ photo_name: img });
       if (!isExists) {
