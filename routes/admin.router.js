@@ -455,14 +455,8 @@ router.post("/kitchen", upload.any(), async (req, res) => {
   try {
     const { title, description, specifications, advantages, photo_names } =
       req.body;
-    return res.status(200).json(req.body);
-    if (
-      !title ||
-      !description ||
-      !specifications ||
-      !advantages ||
-      !photo_names
-    ) {
+
+    if (!title || !description || !advantages || !photo_names.length) {
       return res.status(404).json({ message: "Поля не должны быть пустыми" });
     }
     if (title.length > 100 || description.length > 1024) {
