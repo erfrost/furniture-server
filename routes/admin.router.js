@@ -16,7 +16,7 @@ const KitchenWork = require("../models/KitchenWork");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "../../images");
+    cb(null, "../../images/");
   },
   filename: (req, file, cb) => {
     const uniqueFilename = `${uuidv4()}-${slugify(file.originalname)}`;
@@ -588,9 +588,7 @@ router.patch("/kitchen/works", upload.any(), async (req, res) => {
 
 router.post("/uploadImage", upload.single("image"), async (req, res) => {
   try {
-    console.log(req.file);
     const file = req.files[0];
-    console.log(file);
 
     if (!file) {
       return res.status(400).json({ message: "Файл не был загружен" });
