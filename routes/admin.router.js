@@ -94,18 +94,6 @@ router.post("/items", async (req, res) => {
 //обновление товара
 router.patch("/items/:item_id", upload.any(), async (req, res) => {
   try {
-    const files = req.files;
-
-    if (files.length) {
-      files.map(async (img) => {
-        await Image.create({
-          name: img.filename,
-        });
-      });
-
-      req.body.photo_names.push(...files.map((img) => img.filename));
-    }
-
     if (!req.body) {
       return res.status(404).json({ message: "Поля не должны быть пустыми" });
     }
@@ -136,8 +124,6 @@ router.patch("/items/:item_id", upload.any(), async (req, res) => {
     await Image.deleteMany({
       name: { $in: checkImages },
     });
-
-    await deleteImage(checkImages);
 
     await currentItem.updateOne(req.body);
 
