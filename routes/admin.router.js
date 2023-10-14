@@ -253,7 +253,6 @@ router.delete("/categories/:category_id", async (req, res) => {
     currentCategory.deleteOne(req.body);
 
     await Image.deleteOne({ name: currentCategory.photo_name });
-    await deleteImage([currentCategory.photo_name]);
 
     res.status(200).json({ message: "Категория успешно удалена" });
   } catch (error) {
@@ -454,38 +453,28 @@ router.delete("/news/:news_id", async (req, res) => {
 
 router.post("/kitchen", upload.any(), async (req, res) => {
   try {
-    const files = req.files;
-    const { title, description, specifications, advantages } = req.body;
+    const { title, description, specifications, advantages, photo_names } =
+      req.body;
 
-    if (!files.length) {
-      return res.status(404).json({ message: "Изображение не загружено" });
-    }
-    if (!title || !description || !specifications || !advantages) {
+    if (
+      !title ||
+      !description ||
+      !specifications ||
+      !advantages ||
+      !photo_names
+    ) {
       return res.status(404).json({ message: "Поля не должны быть пустыми" });
     }
     if (title.length > 100 || description.length > 1024) {
       return res.status(404).json({ message: "Превышен лимит по символам" });
     }
 
-    const newKitchen = await Kitchen.create({
+    await Kitchen.create({
       title,
       description,
-      specifications: JSON.parse(specifications),
+      specifications,
       advantages,
     });
-
-    const newImages = [];
-    for (const img of files) {
-      const currentImage = await Image.create({
-        name: img.filename,
-      });
-
-      newImages.push(currentImage.name);
-    }
-
-    newKitchen.photo_names = newImages;
-
-    await newKitchen.save();
 
     res.status(200).json({ message: "Кухня успешно добавлена" });
   } catch (error) {
