@@ -31,7 +31,7 @@ const upload = multer({
 });
 
 //создание товара
-router.post("/items", adminMiddleware, upload.any(), async (req, res) => {
+router.post("/items", upload.any(), async (req, res) => {
   try {
     const files = req.files;
 
