@@ -92,7 +92,7 @@ router.post("/items", async (req, res) => {
 });
 
 //обновление товара
-router.patch("/items/:item_id", upload.any(), async (req, res) => {
+router.patch("/items/:item_id", async (req, res) => {
   try {
     if (!req.body) {
       return res.status(404).json({ message: "Поля не должны быть пустыми" });
@@ -156,7 +156,6 @@ router.delete("/items/:item_id", async (req, res) => {
     await Image.deleteMany({
       name: { $in: currentItem.photo_names },
     });
-    await deleteImage(currentItem.photo_names);
 
     res.status(200).json({ message: "Товар успешно удален" });
   } catch (error) {
@@ -165,13 +164,11 @@ router.delete("/items/:item_id", async (req, res) => {
 });
 
 //создание категории
-router.post("/categories", upload.any(), async (req, res) => {
+router.post("/categories", async (req, res) => {
   try {
-    const file = req.files[0];
+    const { title, photo_name } = req.body;
 
-    const { title } = req.body;
-    console.log(file, title);
-    if (!title || !file) {
+    if (!title) {
       return res.status(404).json({ message: "Поля не должны быть пустыми" });
     }
     if (title.length > 100) {
@@ -183,12 +180,9 @@ router.post("/categories", upload.any(), async (req, res) => {
         .json({ message: "Категория с таким названием уже существует" });
     }
 
-    await Image.create({
-      name: file.filename,
-    });
     await Category.create({
       title,
-      photo_name: file.filename,
+      photo_name,
     });
 
     res.status(200).json({ message: "Категория успешно добавлена" });
