@@ -596,24 +596,24 @@ router.patch("/kitchen/works", upload.any(), async (req, res) => {
   }
 });
 
-// router.post("/uploadImage", upload.any(), async (req, res) => {
-//   try {
-//     const files = req.files;
+router.post("/uploadImage", upload.any(), async (req, res) => {
+  try {
+    const files = req.files;
 
-//     if (!files) {
-//       return res.status(400).json({ message: "Файл не был загружен" });
-//     }
-//     files.map(async (img) => {
-//       await Image.create({
-//         name: img.filename,
-//       });
-//     });
+    if (!files) {
+      return res.status(400).json({ message: "Файл не был загружен" });
+    }
+    files.map(async (img) => {
+      await Image.create({
+        name: img.filename,
+      });
+    });
 
-//     res.status(200).json(files.map((img) => img.filename));
-//   } catch (error) {
-//     res.status(500).json({ message: "Internal server error" });
-//   }
-// });
+    res.status(200).json(files.map((img) => img.filename));
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
 
 router.post("/discount", async (req, res) => {
   try {
