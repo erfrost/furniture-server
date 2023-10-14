@@ -478,7 +478,7 @@ router.post("/kitchen", upload.any(), async (req, res) => {
   }
 });
 
-router.delete("/kitchen:kitchen_id", async (req, res) => {
+router.delete("/kitchen/:kitchen_id", async (req, res) => {
   try {
     const kitchenId = req.params.kitchen_id;
     console.log(kitchenId);
