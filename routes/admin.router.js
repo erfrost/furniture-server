@@ -31,14 +31,8 @@ const upload = multer({
 });
 
 //создание товара
-router.post("/items", upload.any(), async (req, res) => {
+router.post("/items", async (req, res) => {
   try {
-    const files = req.files;
-
-    if (!files || !files.length) {
-      return res.status(400).json({ message: "Изображения не были загружены" });
-    }
-
     const {
       title,
       description,
