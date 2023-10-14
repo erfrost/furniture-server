@@ -98,11 +98,8 @@ router.patch("/items/:item_id", upload.any(), async (req, res) => {
       return res.status(404).json({ message: "Поля не должны быть пустыми" });
     }
 
-    const { title, description, specifications, photo_names } = req.body;
+    const { title, description, photo_names } = req.body;
 
-    if (specifications) {
-      req.body.specifications = JSON.parse(specifications);
-    }
     if (
       (title && title.length > 100) ||
       (description && description.length > 1024)
