@@ -198,21 +198,26 @@ router.patch("/categories/:category_id", async (req, res) => {
       return res.status(404).json({ message: "Поля не должны быть пустыми" });
     }
     const { title, photo_name } = req.body;
+    const currentCategoryId = req.params.category_id;
 
     if (title.length > 100) {
       return res.status(404).json({ message: "Превышен лимит по символам" });
     }
-    if (await Category.findOne({ title })) {
-      return res
-        .status(404)
-        .json({ message: "Категория с таким названием уже существует" });
-    }
 
     const currentCategory = await Category.findOne({
-      _id: req.params.category_id,
+      _id: currentCategoryId,
     });
     if (!currentCategory) {
       return res.status(404).json({ message: "Категория не найдена" });
+    }
+    const categoryWithCurrentTitle = await Category.findOne({ title });
+    if (
+      categoryWithCurrentTitle ||
+      categoryWithCurrentTitle._id !== currentCategoryId
+    ) {
+      return res
+        .status(404)
+        .json({ message: "Категория с таким названием уже существует" });
     }
 
     await Image.deleteOne({ name: currentCategory.photo_name });
