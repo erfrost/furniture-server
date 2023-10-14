@@ -379,42 +379,40 @@ router.delete("/subcategories/:subcategory_id", async (req, res) => {
   }
 });
 
-router.post("/news", upload.any(), async (req, res) => {
+router.post("/news", async (req, res) => {
   try {
-    const file = req.files;
     const {
       title,
       description,
       categoryId: category_id,
       subcategoryId: subcategory_id,
+      photo_name,
     } = req.body;
 
-    if (!file.length) {
-      return res.status(404).json({ message: "Изображение не загружено" });
-    }
-    if (!title || !description || (!category_id && !subcategory_id)) {
+    if (
+      !title ||
+      !description ||
+      (!category_id && !subcategory_id) ||
+      photo_name
+    ) {
       return res.status(404).json({ message: "Поля не должны быть пустыми" });
     }
     if (title.length > 100 || description.length > 130) {
       return res.status(404).json({ message: "Превышен лимит по символам" });
     }
 
-    await Image.create({
-      name: file[0].filename,
-    });
-
     if (category_id) {
       await News.create({
         title,
         description,
-        photo_name: file[0].filename,
+        photo_name,
         category_id,
       });
     } else if (subcategory_id) {
       await News.create({
         title,
         description,
-        photo_name: file[0].filename,
+        photo_name,
         subcategory_id,
       });
     }
