@@ -586,9 +586,11 @@ router.patch("/kitchen/works", upload.any(), async (req, res) => {
   }
 });
 
-router.post("/uploadImage", upload.any(), async (req, res) => {
+router.post("/uploadImage", upload.single("image"), async (req, res) => {
   try {
+    console.log(req.file);
     const file = req.files[0];
+    console.log(file);
 
     if (!file) {
       return res.status(400).json({ message: "Файл не был загружен" });
@@ -600,6 +602,7 @@ router.post("/uploadImage", upload.any(), async (req, res) => {
 
     res.status(200).json(file.filename);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
