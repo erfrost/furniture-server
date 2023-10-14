@@ -494,12 +494,11 @@ router.delete("/kitchen/:kitchen_id", async (req, res) => {
       return res.status(404).json({ message: "Кухня не найдена" });
     }
 
-    currentImages = currentKitchen.photo_names;
+    const currentImages = currentKitchen.photo_names;
 
     currentImages.forEach(async (img) => {
       await Image.deleteOne({ name: img });
     });
-    await deleteImage(currentImages);
 
     await Kitchen.deleteOne({ _id: kitchenId });
 
@@ -512,25 +511,17 @@ router.delete("/kitchen/:kitchen_id", async (req, res) => {
 
 router.patch("/kitchen/works", upload.any(), async (req, res) => {
   try {
-    const files = req.files;
-    const { prevImages } = req.body;
+    const { photo_names } = req.body;
 
-    const imagesToDelete = await KitchenWork.find({
-      photo_name: { $nin: JSON.parse(prevImages) },
+    photo_names.map(async (img) => {
+      const isExists = await KitchenWork.findOne({ photo_name: img });
+      if (!isExists) {
+        await KitchenWork.create({ photo_name: img });
+      }
     });
 
     await KitchenWork.deleteMany({
-      photo_name: { $nin: JSON.parse(prevImages) },
-    });
-
-    await deleteImage(imagesToDelete.map((item) => item.photo_name));
-
-    files.map(async (img) => {
-      await KitchenWork.create({
-        photo_name: img.filename,
-      });
-
-      await Image.create({ name: img.filename });
+      photo_name: { $nin: photo_names },
     });
 
     res.status(200).json({ message: "Фотографии успешно обновлены" });
