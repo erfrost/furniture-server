@@ -468,6 +468,7 @@ router.post("/kitchen", upload.any(), async (req, res) => {
       description,
       specifications,
       advantages,
+      photo_names,
     });
 
     res.status(200).json({ message: "Кухня успешно добавлена" });
