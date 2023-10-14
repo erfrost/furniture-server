@@ -210,11 +210,12 @@ router.patch("/categories/:category_id", async (req, res) => {
     if (!currentCategory) {
       return res.status(404).json({ message: "Категория не найдена" });
     }
-    const categoryWithCurrentTitle = await Category.findOne({ title });
-    if (
-      categoryWithCurrentTitle ||
-      categoryWithCurrentTitle._id !== currentCategoryId
-    ) {
+    const categoryWithCurrentTitle = await Category.findOne({
+      title,
+      _id: { $ne: currentCategoryId },
+    });
+
+    if (categoryWithCurrentTitle) {
       return res
         .status(404)
         .json({ message: "Категория с таким названием уже существует" });
