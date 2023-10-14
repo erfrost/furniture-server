@@ -26,7 +26,7 @@ const storage = multer.diskStorage({
 const upload = multer({
   storage,
   limits: {
-    fileSize: 30 * 1024 * 1024,
+    fileSize: 5 * 1024 * 1024,
   },
 });
 
@@ -46,6 +46,7 @@ router.post("/items", adminMiddleware, upload.any(), async (req, res) => {
       category_id,
       subcategory_id,
       specifications,
+      photo_names,
     } = req.body;
 
     if (
@@ -54,7 +55,8 @@ router.post("/items", adminMiddleware, upload.any(), async (req, res) => {
       !price ||
       !category_id ||
       !subcategory_id ||
-      !specifications
+      !specifications ||
+      !photo_names.length
     ) {
       return res.status(404).json({ message: "Поля не должны быть пустыми" });
     }
@@ -81,25 +83,13 @@ router.post("/items", adminMiddleware, upload.any(), async (req, res) => {
       discountPrice: price,
       category_id,
       subcategory_id,
-      specifications: JSON.parse(specifications),
+      specifications,
+      photo_names,
     });
 
     subcategory.items.push(newItem);
 
     await subcategory.save();
-
-    const newImages = [];
-    for (const img of files) {
-      const currentImage = await Image.create({
-        name: img.filename,
-      });
-
-      newImages.push(currentImage.name);
-    }
-
-    newItem.photo_names = newImages;
-
-    await newItem.save();
 
     res.status(200).json({ message: "Товар успешно добавлен" });
   } catch (error) {
@@ -598,18 +588,17 @@ router.patch("/kitchen/works", upload.any(), async (req, res) => {
 
 router.post("/uploadImage", upload.any(), async (req, res) => {
   try {
-    const files = req.files;
+    const file = req.files[0];
 
-    if (!files) {
+    if (!file) {
       return res.status(400).json({ message: "Файл не был загружен" });
     }
-    files.map(async (img) => {
-      await Image.create({
-        name: img.filename,
-      });
+
+    await Image.create({
+      name: file.filename,
     });
 
-    res.status(200).json(files.map((img) => img.filename));
+    res.status(200).json(file.filename);
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
   }
