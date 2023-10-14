@@ -509,7 +509,7 @@ router.delete("/kitchen/:kitchen_id", async (req, res) => {
   }
 });
 
-router.patch("/kitchen/works", upload.any(), async (req, res) => {
+router.patch("/kitchen/works", async (req, res) => {
   try {
     const { photo_names } = req.body;
 
@@ -519,7 +519,7 @@ router.patch("/kitchen/works", upload.any(), async (req, res) => {
         await KitchenWork.create({ photo_name: img });
       }
     });
-
+    return res.status(999).json({ message: "Internal server error", error });
     await KitchenWork.deleteMany({
       photo_name: { $nin: photo_names },
     });
