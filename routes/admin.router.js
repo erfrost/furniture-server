@@ -192,19 +192,12 @@ router.post("/categories", async (req, res) => {
 });
 
 //обновление категории
-router.patch("/categories/:category_id", upload.any(), async (req, res) => {
+router.patch("/categories/:category_id", async (req, res) => {
   try {
-    const file = req.files;
-    if (file && file.length) {
-      await Image.create({
-        name: file[0].filename,
-      });
-    }
-
     if (!req.body) {
       return res.status(404).json({ message: "Поля не должны быть пустыми" });
     }
-    const { title } = req.body;
+    const { title, photo_name } = req.body;
 
     if (title.length > 100) {
       return res.status(404).json({ message: "Превышен лимит по символам" });
@@ -223,11 +216,10 @@ router.patch("/categories/:category_id", upload.any(), async (req, res) => {
     }
 
     await Image.deleteOne({ name: currentCategory.photo_name });
-    await deleteImage([currentCategory.photo_name]);
 
     await currentCategory.updateOne({
       title,
-      photo_name: file.length ? file[0].filename : currentCategory.photo_name,
+      photo_name: photo_name,
     });
 
     res.status(200).json({ message: "Категория успешно обновлена" });
