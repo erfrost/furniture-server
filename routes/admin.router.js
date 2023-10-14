@@ -478,12 +478,14 @@ router.post("/kitchen", upload.any(), async (req, res) => {
   }
 });
 
-router.delete("/kitchen", async (req, res) => {
+router.delete("/kitchen:kitchen_id", async (req, res) => {
   try {
-    const { kitchenId } = req.body;
+    const kitchenId = req.params.kitchen_id;
     console.log(kitchenId);
     if (!kitchenId) {
-      return res.status(404).json({ message: "Поля не должны быть пустыми" });
+      return res
+        .status(404)
+        .json({ message: "Поля не должны быть пустыми", kitchenId });
     }
 
     const currentKitchen = await Kitchen.findOne({ _id: kitchenId });
