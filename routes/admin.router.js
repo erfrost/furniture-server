@@ -455,7 +455,7 @@ router.post("/kitchen", upload.any(), async (req, res) => {
   try {
     const { title, description, specifications, advantages, photo_names } =
       req.body;
-
+    return res.status(200).json(req.body);
     if (
       !title ||
       !description ||
