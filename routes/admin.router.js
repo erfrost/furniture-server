@@ -388,7 +388,7 @@ router.post("/news", async (req, res) => {
       subcategoryId: subcategory_id,
       photo_name,
     } = req.body;
-    return res.status(200).json(req.body);
+
     if (
       !title ||
       !description ||
