@@ -389,7 +389,7 @@ router.post("/news", async (req, res) => {
       photo_name,
     } = req.body;
 
-    if (!title || !description || photo_name) {
+    if (!title || !description || !photo_name) {
       return res.status(404).json({ message: "Поля не должны быть пустыми" });
     }
     if (!category_id && !subcategory_id) {
