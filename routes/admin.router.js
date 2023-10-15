@@ -388,16 +388,14 @@ router.post("/news", async (req, res) => {
       subcategoryId: subcategory_id,
       photo_name,
     } = req.body;
-
+    return res.status(200).json(req.body);
     if (
       !title ||
       !description ||
       (!category_id && !subcategory_id) ||
       photo_name
     ) {
-      return res
-        .status(404)
-        .json({ message: "Поля не должны быть пустыми" }, req.body);
+      return res.status(404).json({ message: "Поля не должны быть пустыми" });
     }
     if (title.length > 100 || description.length > 130) {
       return res.status(404).json({ message: "Превышен лимит по символам" });
