@@ -389,15 +389,18 @@ router.post("/news", async (req, res) => {
       photo_name,
     } = req.body;
 
-    if (
-      !title ||
-      !description ||
-      (!category_id && !subcategory_id) ||
-      photo_name
-    ) {
+    if (!title || !description || photo_name) {
+      return res.status(404).json({ message: "Поля не должны быть пустыми" });
+    }
+    if (!category_id && !subcategory_id) {
       return res
         .status(404)
-        .json({ message: "Поля не должны быть пустыми", body: req.body });
+        .json({ message: "Категория или подкатегория не выбрана" });
+    }
+    if (category_id && subcategory_id) {
+      return res
+        .status(404)
+        .json({ message: "Выберите или категорию или подкатегорию" });
     }
     if (title.length > 100 || description.length > 130) {
       return res.status(404).json({ message: "Превышен лимит по символам" });
