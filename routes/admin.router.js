@@ -397,7 +397,7 @@ router.post("/news", async (req, res) => {
     ) {
       return res
         .status(404)
-        .json({ message: "Поля не должны быть пустыми" }, req.body);
+        .json({ message: "Поля не должны быть пустыми", body: req.body });
     }
     if (title.length > 100 || description.length > 130) {
       return res.status(404).json({ message: "Превышен лимит по символам" });
