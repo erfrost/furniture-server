@@ -444,7 +444,6 @@ router.delete("/news/:news_id", async (req, res) => {
     }
 
     await Image.deleteOne({ name: currentPost.photo_name });
-    await deleteImage([currentPost.photo_name]);
 
     await News.deleteOne({ _id: news_id });
 
