@@ -98,7 +98,7 @@ router.patch("/items/:item_id", async (req, res) => {
       return res.status(404).json({ message: "Поля не должны быть пустыми" });
     }
 
-    const { title, description, photo_names } = req.body;
+    const { title, description, photo_names, subcategory_id } = req.body;
 
     if (
       (title && title.length > 100) ||
@@ -108,8 +108,26 @@ router.patch("/items/:item_id", async (req, res) => {
     }
 
     const currentItem = await Item.findOne({ _id: req.params.item_id });
+    const currentItemSubcategoryId = currentItem.subcategory_id;
     if (!currentItem) {
       return res.status(404).json({ message: "Товар не найден" });
+    }
+    if (currentItemSubcategoryId !== subcategory_id) {
+      const currentSubcategory = await Subcategory.findOne({
+        _id: currentItemSubcategoryId,
+      });
+      if (currentItem) {
+        currentSubcategory.items.filter(
+          (itemId) => itemId !== currentItemSubcategoryId
+        );
+        await currentSubcategory.save();
+      }
+
+      const newSubcategory = await Subcategory.findOne({ _id: subcategory_id });
+      if (newSubcategory) {
+        newSubcategory.items.push(currentItem._id);
+        await newSubcategory.save();
+      }
     }
 
     const prevImages = currentItem.photo_names;
