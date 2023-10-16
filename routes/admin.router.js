@@ -108,20 +108,21 @@ router.patch("/items/:item_id", async (req, res) => {
     }
 
     const currentItem = await Item.findOne({ _id: req.params.item_id });
-    const currentItemSubcategoryId = currentItem.subcategory_id;
     if (!currentItem) {
       return res.status(404).json({ message: "Товар не найден" });
     }
+
+    const currentItemSubcategoryId = currentItem.subcategory_id;
+
     if (currentItemSubcategoryId !== subcategory_id) {
       const currentSubcategory = await Subcategory.findOne({
         _id: currentItemSubcategoryId,
       });
-      if (currentItem) {
-        currentSubcategory.items.filter(
-          (itemId) => itemId !== currentItemSubcategoryId
-        );
-        await currentSubcategory.save();
-      }
+
+      currentSubcategory.items = currentSubcategory.items.filter(
+        (itemId) => itemId !== currentItemSubcategoryId
+      );
+      await currentSubcategory.save();
 
       const newSubcategory = await Subcategory.findOne({ _id: subcategory_id });
       if (newSubcategory) {

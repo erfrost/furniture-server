@@ -5,6 +5,7 @@ const chalk = require("chalk");
 const mongoose = require("mongoose");
 const routes = require("./routes");
 const bodyParser = require("body-parser");
+const parser = require("./services/parser");
 
 const app = express();
 
@@ -19,6 +20,7 @@ app.use("/images", express.static("../images"));
 mongoose.set("strictQuery", false);
 
 // createAdmin();
+parser();
 
 app.use("/api", routes);
 
