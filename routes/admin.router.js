@@ -120,7 +120,7 @@ router.patch("/items/:item_id", async (req, res) => {
       });
 
       currentSubcategory.items = currentSubcategory.items.filter(
-        (itemId) => itemId !== currentItemSubcategoryId
+        (itemId) => itemId !== currentItem._id
       );
       await currentSubcategory.save();
 
