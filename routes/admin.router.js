@@ -119,10 +119,9 @@ router.patch("/items/:item_id", async (req, res) => {
         _id: currentItemSubcategoryId,
       });
 
-      currentSubcategory.items = currentSubcategory.items.filter(
-        (itemId) => itemId !== currentItem._id
-      );
-      await currentSubcategory.save();
+      await currentSubcategory.updateOne({
+        $pull: { items: currentItem._id },
+      });
 
       const newSubcategory = await Subcategory.findOne({ _id: subcategory_id });
       if (newSubcategory) {
