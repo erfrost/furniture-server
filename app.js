@@ -18,7 +18,6 @@ app.use(bodyParser.json({ limit: "5mb" }));
 app.use(bodyParser.urlencoded({ limit: "5mb", extended: true }));
 
 app.use("/images", express.static("../images"));
-app.use("/files", express.static("/files"));
 
 mongoose.set("strictQuery", false);
 // createAdmin();
