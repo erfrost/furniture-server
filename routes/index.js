@@ -20,6 +20,8 @@ router.use("/orders", require("./order.router"));
 
 router.use("/feedback", require("./feedback.router"));
 
+router.use("/telegram", require("./telegram.router"));
+
 router.get("/categoriesAndSubcategories", async (req, res) => {
   try {
     const categories = await Category.find();
