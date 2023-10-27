@@ -1,13 +1,12 @@
 const express = require("express");
-const TelegramBot = require("node-telegram-bot-api");
 const config = require("config");
 const cors = require("cors");
 const chalk = require("chalk");
 const mongoose = require("mongoose");
 const routes = require("./routes");
 const bodyParser = require("body-parser");
-const parser = require("./services/parser");
-const BotUser = require("./models/BotUser");
+const parserVirash = require("./services/parserVirash.js");
+const parserAlensio = require("./services/parserAlensio");
 
 const app = express();
 
@@ -21,7 +20,8 @@ app.use("/images", express.static("../images"));
 
 mongoose.set("strictQuery", false);
 // createAdmin();
-parser();
+// parserVirash();
+// parserAlensio();
 
 app.use("/api", routes);
 

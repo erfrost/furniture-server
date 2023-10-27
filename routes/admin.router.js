@@ -37,6 +37,7 @@ router.post("/items", async (req, res) => {
       title,
       description,
       price,
+      cashPrice,
       category_id,
       subcategory_id,
       specifications,
@@ -47,6 +48,7 @@ router.post("/items", async (req, res) => {
       !title ||
       !description ||
       !price ||
+      !cashPrice ||
       !category_id ||
       !subcategory_id ||
       !specifications ||
@@ -75,6 +77,7 @@ router.post("/items", async (req, res) => {
       description,
       price,
       discountPrice: price,
+      cashPrice,
       category_id,
       subcategory_id,
       specifications,
@@ -294,16 +297,6 @@ router.post("/subcategories", async (req, res) => {
     if (!category) {
       return res.status(404).json({ message: "Категория не найдена" });
     }
-    if (category.subcategories.length) {
-      for (const id of category.subcategories) {
-        const currentSubcategory = await Subcategory.findOne({ _id: id });
-        if (currentSubcategory?.title === title) {
-          return res.status(404).json({
-            message: "Подкатегория с таким названием уже существует",
-          });
-        }
-      }
-    }
 
     const newSubcategory = await Subcategory.create({
       title,
@@ -330,16 +323,6 @@ router.patch("/subcategories/:subcategory_id", async (req, res) => {
     }
     if (title.length > 100) {
       return res.status(404).json({ message: "Превышен лимит по символам" });
-    }
-    if (await Subcategory.findOne({ title })) {
-      return res
-        .status(404)
-        .json({ message: "Подкатегория с таким названием уже существует" });
-    }
-    if (await Subcategory.findOne({ title })) {
-      return res
-        .status(404)
-        .json({ message: "Подкатегория с таким названием уже существует" });
     }
 
     const currentSubcategory = await Subcategory.findOne({
