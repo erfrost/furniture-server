@@ -21,7 +21,7 @@ app.use("/images", express.static("../images"));
 mongoose.set("strictQuery", false);
 // createAdmin();
 // parserVirash();
-// parserAlensio();
+parserAlensio();
 
 app.use("/api", routes);
 

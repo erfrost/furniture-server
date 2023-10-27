@@ -329,14 +329,10 @@ router.patch("/subcategories/:subcategory_id", async (req, res) => {
       _id: req.params.subcategory_id,
     });
     if (!currentSubcategory) {
-      return res
-        .status(404)
-        .json({ message: "Подкатегория не найдена не найден" });
+      return res.status(404).json({ message: "Подкатегория не найдена" });
     }
 
-    await currentSubcategory.updateOne({
-      title,
-    });
+    await currentSubcategory.updateOne(req.body);
 
     res.status(200).json({ message: "Категория успешно обновлена" });
   } catch (error) {
