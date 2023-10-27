@@ -336,7 +336,7 @@ router.patch("/subcategories/:subcategory_id", async (req, res) => {
 
     res.status(200).json({ message: "Категория успешно обновлена" });
   } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({ message: "Internal server error", error });
   }
 });
 
