@@ -325,16 +325,12 @@ router.patch("/subcategories/:subcategory_id", async (req, res) => {
       return res.status(404).json({ message: "Превышен лимит по символам" });
     }
 
-    const currentSubcategory = await Subcategory.findOne({
-      _id: req.params.subcategory_id,
-    });
-    if (!currentSubcategory) {
-      return res.status(404).json({ message: "Подкатегория не найдена" });
-    }
+    const currentSubcategory = await Subcategory.findOneAndUpdate(
+      { _id: req.params.subcategory_id },
+      { title },
+      { new: true }
+    );
 
-    await currentSubcategory.update({
-      title,
-    });
     res.status(200).json({
       message: "Категория успешно обновлена",
       subcategory: currentSubcategory,
