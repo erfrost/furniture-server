@@ -13,6 +13,7 @@ const Image = require("../models/Image");
 const deleteImage = require("../services/deleteImage");
 const Kitchen = require("../models/Kitchen");
 const KitchenWork = require("../models/KitchenWork");
+const { default: mongoose } = require("mongoose");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -319,18 +320,21 @@ router.patch("/subcategories/:subcategory_id", async (req, res) => {
     const { title } = req.body;
     const id = req.params.subcategory_id;
 
-    if (!title) {
-      return res.status(404).json({ message: "Поля не должны быть пустыми" });
-    }
-    if (title.length > 100) {
-      return res.status(404).json({ message: "Превышен лимит по символам" });
-    }
+    // if (!title) {
+    //   return res.status(404).json({ message: "Поля не должны быть пустыми" });
+    // }
+    // if (title.length > 100) {
+    //   return res.status(404).json({ message: "Превышен лимит по символам" });
+    // }
 
-    const currentSubcategory = await Subcategory.findOneAndUpdate(
-      { _id: id },
-      { title },
-      { new: true }
-    );
+    // const currentSubcategory = await Subcategory.findOneAndUpdate(
+    //   { _id: id },
+    //   { title },
+    //   { new: true }
+    // );
+
+    const Subcategory = mongoose.model("Subcategory");
+    Subcategory.collection.dropIndex("title_1");
 
     res.status(200).json({
       message: "Категория успешно обновлена",
