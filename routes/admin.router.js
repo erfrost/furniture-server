@@ -317,6 +317,7 @@ router.post("/subcategories", async (req, res) => {
 router.patch("/subcategories/:subcategory_id", async (req, res) => {
   try {
     const { title } = req.body;
+    const id = req.params.subcategory_id;
 
     if (!title) {
       return res.status(404).json({ message: "Поля не должны быть пустыми" });
@@ -325,15 +326,15 @@ router.patch("/subcategories/:subcategory_id", async (req, res) => {
       return res.status(404).json({ message: "Превышен лимит по символам" });
     }
 
-    const currentSubcategory = await Subcategory.findOneAndUpdate(
-      { _id: req.params.subcategory_id },
-      { title },
-      { new: true }
-    );
+    // const currentSubcategory = await Subcategory.findOneAndUpdate(
+    //   { _id: req.params.subcategory_id },
+    //   { title },
+    //   { new: true }
+    // );
 
     res.status(200).json({
       message: "Категория успешно обновлена",
-      subcategory: currentSubcategory,
+      id,
     });
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
