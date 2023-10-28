@@ -4,7 +4,6 @@ const schema = new Schema({
   title: {
     type: String,
     required: true,
-    unique: true,
   },
   category_id: {
     type: String,
