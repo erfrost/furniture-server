@@ -325,9 +325,9 @@ router.patch("/subcategories/:subcategory_id", async (req, res) => {
       return res.status(404).json({ message: "Превышен лимит по символам" });
     }
 
-    // const currentSubcategory = await Subcategory.findOne({
-    //   _id: req.params.subcategory_id,
-    // });
+    const currentSubcategory = await Subcategory.findOne({
+      _id: req.params.subcategory_id,
+    });
     // if (!currentSubcategory) {
     //   return res.status(404).json({ message: "Подкатегория не найдена" });
     // }
@@ -336,7 +336,12 @@ router.patch("/subcategories/:subcategory_id", async (req, res) => {
     //   title,
     // });
 
-    res.status(200).json({ message: "Категория успешно обновлена" });
+    res
+      .status(200)
+      .json({
+        message: "Категория успешно обновлена",
+        subcategory: currentSubcategory,
+      });
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
   }
