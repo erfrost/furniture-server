@@ -320,25 +320,23 @@ router.patch("/subcategories/:subcategory_id", async (req, res) => {
     const { title } = req.body;
     const id = req.params.subcategory_id;
 
-    // if (!title) {
-    //   return res.status(404).json({ message: "Поля не должны быть пустыми" });
-    // }
-    // if (title.length > 100) {
-    //   return res.status(404).json({ message: "Превышен лимит по символам" });
-    // }
+    if (!title) {
+      return res.status(404).json({ message: "Поля не должны быть пустыми" });
+    }
+    if (title.length > 100) {
+      return res.status(404).json({ message: "Превышен лимит по символам" });
+    }
 
-    // const currentSubcategory = await Subcategory.findOneAndUpdate(
-    //   { _id: id },
-    //   { title },
-    //   { new: true }
-    // );
+    const currentSubcategory = await Subcategory.findOne({ _id: id });
 
-    const Subcategory = mongoose.model("Subcategory");
-    Subcategory.collection.dropIndex("title_1");
+    if (!currentSubcategory) {
+      return res.status(404).json({ message: "Подкатегория не найдена" });
+    }
+
+    await currentSubcategory.updateOne({ title });
 
     res.status(200).json({
       message: "Категория успешно обновлена",
-      id,
     });
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
