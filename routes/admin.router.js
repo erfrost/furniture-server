@@ -328,20 +328,17 @@ router.patch("/subcategories/:subcategory_id", async (req, res) => {
     const currentSubcategory = await Subcategory.findOne({
       _id: req.params.subcategory_id,
     });
-    // if (!currentSubcategory) {
-    //   return res.status(404).json({ message: "Подкатегория не найдена" });
-    // }
+    if (!currentSubcategory) {
+      return res.status(404).json({ message: "Подкатегория не найдена" });
+    }
 
-    // await currentSubcategory.updateOne({
-    //   title,
-    // });
-
-    res
-      .status(200)
-      .json({
-        message: "Категория успешно обновлена",
-        subcategory: currentSubcategory,
-      });
+    await currentSubcategory.update({
+      title,
+    });
+    res.status(200).json({
+      message: "Категория успешно обновлена",
+      subcategory: currentSubcategory,
+    });
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
   }
