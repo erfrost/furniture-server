@@ -57,6 +57,9 @@ router.get("/discount", async (req, res) => {
       },
     ];
 
+    const allItems = await Item.aggregate(aggregationPipeline);
+    const count = allItems.length;
+
     if (!isNaN(offset)) {
       aggregationPipeline.push({ $skip: offset });
     }
@@ -67,7 +70,7 @@ router.get("/discount", async (req, res) => {
 
     const items = await Item.aggregate(aggregationPipeline);
 
-    res.status(200).json(items);
+    res.status(200).json({ items, count });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Internal server error" });
@@ -79,7 +82,7 @@ router.get("/", async (req, res) => {
     let query = Item.find();
     const limit = parseInt(req.query.limit);
     const offset = parseInt(req.query.offset);
-    console.log(limit, offset);
+
     if (limit) {
       query = query.limit(limit);
     }
@@ -123,7 +126,7 @@ router.get("/by_category/:category_id", async (req, res) => {
 
     const items = await allItems.exec();
 
-    res.status(200).json(items);
+    res.status(200).json({ items, count: allItems.length });
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
   }
@@ -148,6 +151,9 @@ router.get("/by_subcategory/:subcategory_id", async (req, res) => {
     }
     const itemsIdArray = currentSubcategory.items;
 
+    const countItems = await Item.find({ subcategory_id: subcategoryId });
+    const count = countItems.length;
+
     let query = Item.find({
       _id: { $in: itemsIdArray },
     });
@@ -161,7 +167,7 @@ router.get("/by_subcategory/:subcategory_id", async (req, res) => {
 
     const allItems = await query.exec();
 
-    res.status(200).json(allItems);
+    res.status(200).json({ items: allItems, count });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Internal server error" });
