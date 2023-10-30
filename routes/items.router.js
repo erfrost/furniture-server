@@ -115,6 +115,9 @@ router.get("/by_category/:category_id", async (req, res) => {
 
     const subcategoriesIdArray = currentCategory.subcategories;
 
+    const countItems = await Item.find({ category_id: categoryId });
+    const count = countItems.length;
+
     let allItems = Item.find({ subcategory_id: { $in: subcategoriesIdArray } });
 
     if (limit) {
@@ -126,7 +129,7 @@ router.get("/by_category/:category_id", async (req, res) => {
 
     const items = await allItems.exec();
 
-    res.status(200).json({ items, count: allItems.length });
+    res.status(200).json({ items, count });
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
   }
