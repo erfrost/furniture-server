@@ -7,6 +7,12 @@ const routes = require("./routes");
 const bodyParser = require("body-parser");
 const parserVirash = require("./services/parserVirash.js");
 const parserAlensio = require("./services/parserAlensio");
+const parserMelodiaSnas = require("./services/parserMelodiaSna");
+const parserSurmeb = require("./services/parserSurmeb");
+const parserBerhouse = require("./services/parserBerhouse");
+const parserSultanDivan = require("./services/parserSultanDivan");
+const parserOlymp = require("./services/parserOlymp");
+const parserOlmeko = require("./services/parserOlmeko");
 
 const app = express();
 
@@ -21,7 +27,13 @@ app.use("/images", express.static("../images"));
 mongoose.set("strictQuery", false);
 // createAdmin();
 // parserVirash();
-parserAlensio();
+// parserAlensio();
+// parserMelodiaSnas();
+// parserSurmeb();
+// parserBerhouse();
+// parserSultanDivan();
+// parserOlymp();
+// parserOlmeko();
 
 app.use("/api", routes);
 

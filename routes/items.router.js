@@ -25,6 +25,9 @@ router.get("/search", async (req, res) => {
       },
     });
 
+    const allItems = await Item.aggregate(aggregationPipeline);
+    const count = allItems.length;
+
     if (!isNaN(offset)) {
       aggregationPipeline.push({ $skip: offset });
     }
@@ -35,9 +38,9 @@ router.get("/search", async (req, res) => {
 
     const items = await Item.aggregate(aggregationPipeline);
 
-    res.status(200).json(items);
+    res.status(200).json({ items, count });
   } catch (error) {
-    res.status(500).json({ message: "Внутренняя ошибка сервера" });
+    res.status(500).json({ message: "Internal server error" });
   }
 });
 
@@ -88,10 +91,7 @@ router.get("/", async (req, res) => {
 
     res.status(200).json(items);
   } catch (error) {
-    console.log(error);
-    res
-      .status(500)
-      .json({ message: "Внутренняя ошибка сервера", error: error });
+    res.status(500).json({ message: "Internal server error" });
   }
 });
 

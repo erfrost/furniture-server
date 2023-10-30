@@ -6,11 +6,11 @@ const Subcategory = require("../models/Subcategory");
 const baseUrl = "https://www.alensio.ru";
 
 const bodyDescription =
-  "Офисные диваны - это не только функциональные предметы мебели, но и элементы дизайна, которые могут создать привлекательную и профессиональную атмосферу в офисе. Правильный выбор офисного дивана поможет создать комфортное и стильное рабочее пространство для сотрудников и гостей.";
+  "Вешалки для кафе являются важным элементом меблировки, который помогает создать удобную и гостеприимную атмосферу для посетителей. Они помогают сохранить порядок и предоставляют удобное место для хранения верхней одежды, освобождая посетителей от необходимости держать ее на руках или на стульях.";
 
 const parserAlensio = async () => {
   try {
-    const res = await axios.get(baseUrl + "/catalog/ofisnyje-divany/");
+    const res = await axios.get(baseUrl + "/catalog/komplektuyushchie/");
     const html = res.data;
 
     const domThree = new JSDOM(html);
@@ -31,8 +31,8 @@ const parserAlensio = async () => {
       const data = {
         furnisherId: "18А",
         specifications: [],
-        category_id: "653c08481e1415d9c89d1765",
-        subcategory_id: "653c08511e1415d9c89d1769",
+        category_id: "653d376ff572ba32d05201bd",
+        subcategory_id: "653d3798f572ba32d05201c1",
         description: bodyDescription,
         specifications: [],
       };
@@ -53,12 +53,13 @@ const parserAlensio = async () => {
       data.cashPrice = formattedPrice * 2;
 
       const images = document.querySelectorAll(".res-img");
+      const filteredImages = Array.from(images).filter(
+        (el) => el.getAttribute("src").indexOf("resize_cache") !== -1
+      );
 
-      data.photo_names = Array.from(images)
-        .slice(0, 3)
-        .map((el) => {
-          return baseUrl + el.getAttribute("src");
-        });
+      data.photo_names = filteredImages.map((el) => {
+        return baseUrl + el.getAttribute("src");
+      });
 
       console.log(data);
 
@@ -66,13 +67,14 @@ const parserAlensio = async () => {
       if (itemWithCurrentTitle) {
         return;
       }
-      const newItem = await Item.create(data);
 
-      const currentSubcategory = await Subcategory.findOne({
-        _id: newItem.subcategory_id,
-      });
-      currentSubcategory.items.push(newItem);
-      await currentSubcategory.save();
+      // const newItem = await Item.create(data);
+
+      // const currentSubcategory = await Subcategory.findOne({
+      //   _id: newItem.subcategory_id,
+      // });
+      // currentSubcategory.items.push(newItem._id);
+      // await currentSubcategory.save();
     });
   } catch (error) {
     console.log("error", error);
