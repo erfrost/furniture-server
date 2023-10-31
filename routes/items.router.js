@@ -9,7 +9,7 @@ router.get("/search", async (req, res) => {
     const searchText = req.query.search;
     const limit = parseInt(req.query.limit);
     const offset = parseInt(req.query.offset);
-
+    return res.status(200).json(searchText);
     let aggregationPipeline = [];
 
     if (!searchText) {
@@ -128,7 +128,7 @@ router.get("/by_category/:category_id", async (req, res) => {
     }
 
     const items = await allItems.exec();
-
+    console.log(count);
     res.status(200).json({ items, count });
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
