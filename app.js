@@ -33,7 +33,7 @@ mongoose.set("strictQuery", false);
 // parserBerhouse();
 // parserSultanDivan();
 // parserOlymp();
-parserOlmeko();
+// parserOlmeko();
 
 app.use("/api", routes);
 

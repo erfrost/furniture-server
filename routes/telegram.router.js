@@ -13,7 +13,6 @@ const bot = new TelegramBot(config.botAPI, {
 
 bot.onText(/\/start/, async (msg) => {
   const chatId = msg.chat.id;
-  console.log(chatId);
 
   await BotUser.create({ chatId });
 
@@ -23,7 +22,6 @@ bot.onText(/\/start/, async (msg) => {
 bot.on("left_chat_member", async (msg) => {
   const chatId = msg.chat.id;
   const userId = msg.left_chat_member.id;
-  console.log(`Пользователь ${userId} покинул чат ${chatId}`);
 
   await BotUser.findOneAndDelete({ chatId, userId });
 
@@ -33,7 +31,7 @@ bot.on("left_chat_member", async (msg) => {
 router.post("/newOrder", async (req, res) => {
   try {
     const { text } = req.body;
-    console.log(req.body);
+
     const allUsers = await BotUser.find();
 
     allUsers.map(async (user) => {

@@ -138,7 +138,6 @@ router.patch("/items/:item_id", async (req, res) => {
     const checkImages = prevImages.filter(
       (item) => !photo_names.includes(item)
     );
-    console.log(checkImages);
 
     await Image.deleteMany({
       name: { $in: checkImages },
@@ -148,7 +147,6 @@ router.patch("/items/:item_id", async (req, res) => {
 
     res.status(200).json({ message: "Товар успешно обновлен" });
   } catch (error) {
-    console.log(error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
@@ -286,7 +284,7 @@ router.delete("/categories/:category_id", async (req, res) => {
 router.post("/subcategories", async (req, res) => {
   try {
     const { title, category_id } = req.body;
-    console.log(title, category_id);
+
     if (!title || !category_id) {
       return res.status(404).json({ message: "Поля не должны быть пустыми" });
     }
@@ -309,7 +307,6 @@ router.post("/subcategories", async (req, res) => {
 
     res.status(200).json({ message: "Подкатегория успешно добавлена" });
   } catch (error) {
-    console.log(error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
@@ -381,51 +378,19 @@ router.delete("/subcategories/:subcategory_id", async (req, res) => {
 
 router.post("/news", async (req, res) => {
   try {
-    const {
-      title,
-      description,
-      categoryId: category_id,
-      subcategoryId: subcategory_id,
+    const { photo_name } = req.body;
+
+    if (photo_name) {
+      return res.status(404).json({ message: "Изображение не загружено" });
+    }
+
+    await News.create({
       photo_name,
-    } = req.body;
-
-    if (!title || !description || !photo_name) {
-      return res.status(404).json({ message: "Поля не должны быть пустыми" });
-    }
-    if (!category_id && !subcategory_id) {
-      return res
-        .status(404)
-        .json({ message: "Категория или подкатегория не выбрана" });
-    }
-    if (category_id && subcategory_id) {
-      return res
-        .status(404)
-        .json({ message: "Выберите или категорию или подкатегорию" });
-    }
-    if (title.length > 100 || description.length > 130) {
-      return res.status(404).json({ message: "Превышен лимит по символам" });
-    }
-
-    if (category_id) {
-      await News.create({
-        title,
-        description,
-        photo_name,
-        category_id,
-      });
-    } else if (subcategory_id) {
-      await News.create({
-        title,
-        description,
-        photo_name,
-        subcategory_id,
-      });
-    }
+    });
 
     res.status(200).json({ message: "Новость успешно добавлена" });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: "Internal server error", error });
+    res.status(500).json({ message: "Internal server error" });
   }
 });
 
@@ -475,7 +440,6 @@ router.post("/kitchen", upload.any(), async (req, res) => {
 
     res.status(200).json({ message: "Кухня успешно добавлена" });
   } catch (error) {
-    console.log(error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
@@ -483,7 +447,6 @@ router.post("/kitchen", upload.any(), async (req, res) => {
 router.delete("/kitchen/:kitchen_id", async (req, res) => {
   try {
     const kitchenId = req.params.kitchen_id;
-    console.log(kitchenId);
     if (!kitchenId) {
       return res
         .status(404)
@@ -506,7 +469,6 @@ router.delete("/kitchen/:kitchen_id", async (req, res) => {
 
     res.status(200).json({ message: "Кухня успешно удалена" });
   } catch (error) {
-    console.log(error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
@@ -528,7 +490,6 @@ router.patch("/kitchen/works", async (req, res) => {
 
     res.status(200).json({ message: "Фотографии успешно обновлены" });
   } catch (error) {
-    console.log(error);
     res.status(500).json({ message: "Internal server error", error });
   }
 });
@@ -536,7 +497,6 @@ router.patch("/kitchen/works", async (req, res) => {
 router.post("/uploadImage", upload.single("image"), async (req, res) => {
   try {
     const file = req.file;
-    console.log(file);
     if (!file) {
       return res.status(400).json({ message: "Файл не был загружен" });
     }
@@ -547,7 +507,6 @@ router.post("/uploadImage", upload.single("image"), async (req, res) => {
 
     res.status(200).json("https://api.dom888.ru/images/" + file.filename);
   } catch (error) {
-    console.log(error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
@@ -555,7 +514,7 @@ router.post("/uploadImage", upload.single("image"), async (req, res) => {
 router.post("/discount", async (req, res) => {
   try {
     const { itemId, discountPrice } = req.body;
-    console.log(discountPrice);
+
     if (!itemId || !discountPrice) {
       return res.status(404).json({ message: "Поля не должны быть пустыми" });
     }

@@ -18,7 +18,10 @@ router.get("/search", async (req, res) => {
       });
     }
 
-    const regex = new RegExp(searchText, "i");
+    const regex = new RegExp(
+      searchText.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
+      "i"
+    );
     aggregationPipeline.push({
       $match: {
         title: regex,
@@ -74,7 +77,6 @@ router.get("/discount", async (req, res) => {
 
     res.status(200).json({ items, count });
   } catch (error) {
-    console.log(error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
@@ -130,7 +132,7 @@ router.get("/by_category/:category_id", async (req, res) => {
     }
 
     const items = await allItems.exec();
-    console.log(count);
+
     res.status(200).json({ items, count });
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
@@ -174,7 +176,6 @@ router.get("/by_subcategory/:subcategory_id", async (req, res) => {
 
     res.status(200).json({ items: allItems, count });
   } catch (error) {
-    console.log(error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
@@ -182,7 +183,7 @@ router.get("/by_subcategory/:subcategory_id", async (req, res) => {
 router.get("/by_itemId/:item_id", async (req, res) => {
   try {
     const itemId = req.params.item_id;
-    console.log(itemId);
+
     if (!itemId) {
       return res.status(404).json({ message: "Проверьте параметры запроса" });
     }
@@ -194,7 +195,6 @@ router.get("/by_itemId/:item_id", async (req, res) => {
 
     res.status(200).json(currentItem);
   } catch (error) {
-    console.log(error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
@@ -202,7 +202,7 @@ router.get("/by_itemId/:item_id", async (req, res) => {
 router.post("/by_ids", async (req, res) => {
   try {
     const { itemIds } = req.body;
-    console.log(itemIds);
+
     if (!itemIds || !itemIds.length) {
       res.status(200).json([]);
     } else {
@@ -210,7 +210,6 @@ router.post("/by_ids", async (req, res) => {
       res.status(200).json(items);
     }
   } catch (error) {
-    console.log(error);
     res.status(500).json({ message: "Internal server error" });
   }
 });

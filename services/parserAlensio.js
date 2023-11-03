@@ -61,8 +61,6 @@ const parserAlensio = async () => {
         return baseUrl + el.getAttribute("src");
       });
 
-      console.log(data);
-
       const itemWithCurrentTitle = await Item.findOne({ title: data.title });
       if (itemWithCurrentTitle) {
         return;

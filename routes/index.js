@@ -26,10 +26,9 @@ router.get("/categoriesAndSubcategories", async (req, res) => {
   try {
     const categories = await Category.find();
     const subcategories = await Subcategory.find();
-    console.log(categories, subcategories);
+
     res.status(200).json({ categories, subcategories });
   } catch (error) {
-    console.log(error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
@@ -46,7 +45,7 @@ router.get("/categories", async (req, res) => {
 router.get("/subcategories/search", async (req, res) => {
   try {
     const searchText = req.query.search;
-    console.log(searchText);
+
     let filteredSubcategories = [];
 
     if (searchText) {
@@ -54,12 +53,10 @@ router.get("/subcategories/search", async (req, res) => {
       filteredSubcategories = await Subcategory.find({
         title: regex,
       }).exec();
-      console.log(filteredSubcategories);
     }
 
     res.status(200).json(filteredSubcategories);
   } catch (error) {
-    console.log(error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
@@ -81,7 +78,6 @@ router.get("/subcategories/:category_id", async (req, res) => {
 
     res.status(200).json(subcategories);
   } catch (error) {
-    console.log(error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
@@ -102,7 +98,6 @@ router.get("/kitchen", async (req, res) => {
 
     res.status(200).json(allKitchens);
   } catch (error) {
-    console.log(error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
@@ -118,7 +113,6 @@ router.get("/kitchen/by_id/:kitchen_id", async (req, res) => {
 
     res.status(200).json(currentKitchen);
   } catch (error) {
-    console.log(error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
@@ -126,7 +120,7 @@ router.get("/kitchen/by_id/:kitchen_id", async (req, res) => {
 router.get("/kitchen/search", async (req, res) => {
   try {
     const searchText = req.query.search;
-    console.log(searchText);
+
     let filteredKitchens = [];
 
     if (searchText) {
@@ -134,12 +128,10 @@ router.get("/kitchen/search", async (req, res) => {
       filteredKitchens = await Kitchen.find({
         title: regex,
       }).exec();
-      console.log(filteredKitchens);
     }
-    console.log(filteredKitchens);
+
     res.status(200).json(filteredKitchens);
   } catch (error) {
-    console.log(error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
@@ -150,7 +142,6 @@ router.get("/kitchenWork", async (req, res) => {
 
     res.status(200).json(allKitchenWork);
   } catch (error) {
-    console.log(error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
