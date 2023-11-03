@@ -380,7 +380,7 @@ router.post("/news", async (req, res) => {
   try {
     const { photo_name } = req.body;
 
-    if (photo_name) {
+    if (!photo_name) {
       return res.status(404).json({ message: "Изображение не загружено" });
     }
 
