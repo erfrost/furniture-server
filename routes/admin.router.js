@@ -10,10 +10,8 @@ const News = require("../models/News");
 const authMiddleware = require("../middleware/auth.middleware");
 const adminMiddleware = require("../middleware/admin.middleware");
 const Image = require("../models/Image");
-const deleteImage = require("../services/deleteImage");
 const Kitchen = require("../models/Kitchen");
 const KitchenWork = require("../models/KitchenWork");
-const { default: mongoose } = require("mongoose");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -91,7 +89,7 @@ router.post("/items", async (req, res) => {
 
     res.status(200).json({ message: "Товар успешно добавлен" });
   } catch (error) {
-    res.status(500).json({ message: "Internal server error", error });
+    res.status(500).json({ message: "Internal server error" });
   }
 });
 
