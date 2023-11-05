@@ -39,6 +39,7 @@ router.post("/items", async (req, res) => {
       cashPrice,
       category_id,
       subcategory_id,
+      furnisherId,
       specifications,
       photo_names,
     } = req.body;
@@ -79,6 +80,7 @@ router.post("/items", async (req, res) => {
       cashPrice,
       category_id,
       subcategory_id,
+      furnisherId,
       specifications,
       photo_names,
     });
