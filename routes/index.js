@@ -153,7 +153,7 @@ router.get("/furnisher/:furnisher_id", async (req, res) => {
     const limit = parseInt(req.query.limit);
     const offset = parseInt(req.query.offset);
 
-    let allItems = await Item.find({ furnisherId });
+    let allItems = Item.find({ furnisherId });
 
     if (limit) {
       allItems = allItems.limit(limit);
@@ -162,8 +162,11 @@ router.get("/furnisher/:furnisher_id", async (req, res) => {
       allItems = allItems.skip(offset);
     }
 
-    res.status(200).json(allItems);
+    const items = await allItems.exec();
+
+    res.status(200).json(items);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: "Internal server error" });
   }
 });

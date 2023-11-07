@@ -122,7 +122,9 @@ router.get("/by_category/:category_id", async (req, res) => {
     const countItems = await Item.find({ category_id: categoryId });
     const count = countItems.length;
 
-    let allItems = Item.find({ subcategory_id: { $in: subcategoriesIdArray } });
+    let allItems = Item.find({
+      subcategory_id: { $in: subcategoriesIdArray },
+    });
 
     if (limit) {
       allItems = allItems.limit(limit);
