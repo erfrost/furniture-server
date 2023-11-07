@@ -154,6 +154,9 @@ router.get("/furnisher/:furnisher_id", async (req, res) => {
     const offset = parseInt(req.query.offset);
 
     let allItems = Item.find({ furnisherId });
+    const countItems = await Item.find({ furnisherId });
+    const count = countItems.length;
+    console.log(allItems);
 
     if (limit) {
       allItems = allItems.limit(limit);
@@ -163,7 +166,6 @@ router.get("/furnisher/:furnisher_id", async (req, res) => {
     }
 
     const items = await allItems.exec();
-    const count = items.length;
 
     res.status(200).json({ items, count });
   } catch (error) {
