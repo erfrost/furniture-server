@@ -163,8 +163,9 @@ router.get("/furnisher/:furnisher_id", async (req, res) => {
     }
 
     const items = await allItems.exec();
+    const count = items.length;
 
-    res.status(200).json(items);
+    res.status(200).json({ items, count });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Internal server error" });
