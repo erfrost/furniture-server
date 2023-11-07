@@ -150,11 +150,17 @@ router.get("/kitchenWork", async (req, res) => {
 router.get("/furnisher/:furnisher_id", async (req, res) => {
   try {
     const furnisherId = req.params.furnisher_id;
-    const allItems = await Item.find();
+    const limit = parseInt(req.query.limit);
+    const offset = parseInt(req.query.offset);
 
-    const filteredItems = allItems.filter(
-      (item) => item.furnisherId === furnisherId
-    );
+    const allItems = await Item.find({ furnisherId });
+
+    if (limit) {
+      allItems = allItems.limit(limit);
+    }
+    if (offset) {
+      allItems = allItems.skip(offset);
+    }
 
     res.status(200).json(filteredItems);
   } catch (error) {
