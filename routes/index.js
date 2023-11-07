@@ -4,6 +4,7 @@ const Subcategory = require("../models/Subcategory");
 const News = require("../models/News");
 const Kitchen = require("../models/Kitchen");
 const KitchenWork = require("../models/KitchenWork");
+const Item = require("../models/Item");
 const router = express.Router({ mergeParams: true });
 
 router.use("/auth", require("./auth.router"));
@@ -141,6 +142,21 @@ router.get("/kitchenWork", async (req, res) => {
     const allKitchenWork = await KitchenWork.find();
 
     res.status(200).json(allKitchenWork);
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+router.get("/furnisher/:furnisher_id", async (req, res) => {
+  try {
+    const furnisherId = req.params.furnisher_id;
+    const allItems = await Item.find();
+
+    const filteredItems = allItems.filter(
+      (item) => item.furnisherId === furnisherId
+    );
+
+    res.status(200).json(filteredItems);
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
   }
