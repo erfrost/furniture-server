@@ -216,4 +216,32 @@ router.post("/by_ids", async (req, res) => {
   }
 });
 
+router.get("/by_furnisher/:furnisher_id", async (req, res) => {
+  try {
+    console.log("request");
+    const furnisherId = req.params.furnisher_id;
+    const limit = parseInt(req.query.limit);
+    const offset = parseInt(req.query.offset);
+
+    let allItems = Item.find({ furnisherId });
+    const countItems = await Item.find({ furnisherId });
+    const count = countItems.length;
+    console.log(allItems);
+
+    if (limit) {
+      allItems = allItems.limit(limit);
+    }
+    if (offset) {
+      allItems = allItems.skip(offset);
+    }
+
+    const items = await allItems.exec();
+
+    res.status(200).json({ items, count });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 module.exports = router;
