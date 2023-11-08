@@ -218,15 +218,14 @@ router.post("/by_ids", async (req, res) => {
 
 router.get("/by_furnisher/:furnisher_id", async (req, res) => {
   try {
-    console.log("request");
     const furnisherId = req.params.furnisher_id;
     const limit = parseInt(req.query.limit);
     const offset = parseInt(req.query.offset);
 
     let allItems = Item.find({ furnisherId });
-    const countItems = await Item.find({ furnisherId });
+
+    const countItems = await Item.find();
     const count = countItems.length;
-    console.log(allItems);
 
     if (limit) {
       allItems = allItems.limit(limit);
