@@ -224,7 +224,7 @@ router.get("/by_furnisher/:furnisher_id", async (req, res) => {
 
     let allItems = Item.find({ furnisherId });
 
-    const countItems = await Item.find();
+    const countItems = await Item.find({ furnisherId });
     const count = countItems.length;
 
     if (limit) {
