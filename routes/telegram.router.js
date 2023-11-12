@@ -28,7 +28,7 @@ bot.on("left_chat_member", async (msg) => {
   await bot.sendMessage(chatId, "Вы покинули бота");
 });
 
-router.post("/newOrder", async (req, res) => {
+router.post("/send", async (req, res) => {
   try {
     const { text } = req.body;
 
