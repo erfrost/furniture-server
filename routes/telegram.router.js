@@ -14,18 +14,32 @@ const bot = new TelegramBot(config.botAPI, {
 bot.onText(/\/start/, async (msg) => {
   const chatId = msg.chat.id;
 
-  await BotUser.create({ chatId });
+  if (!(await BotUser.findOne({ userId }))) {
+    await bot.sendMessage(
+      chatId,
+      "Пожалуйста, введите пароль для доступа к боту."
+    );
+  }
+});
 
-  await bot.sendMessage(chatId, "Бот запущен");
+bot.on("message", async (msg) => {
+  const chatId = msg.chat.id;
+  const password = msg.text;
+
+  if (password === "ваш_правильный_пароль") {
+    if (!(await BotUser.findOne({ userId }))) {
+      await BotUser.create({ chatId });
+    }
+    await bot.sendMessage(chatId, "Добро пожаловать!");
+  } else {
+    await bot.sendMessage(chatId, "Неправильный пароль. Попробуйте еще раз.");
+  }
 });
 
 bot.on("left_chat_member", async (msg) => {
   const chatId = msg.chat.id;
-  const userId = msg.left_chat_member.id;
 
-  await BotUser.findOneAndDelete({ chatId, userId });
-
-  await bot.sendMessage(chatId, "Вы покинули бота");
+  await BotUser.findOneAndDelete({ chatId });
 });
 
 router.post("/send", async (req, res) => {
