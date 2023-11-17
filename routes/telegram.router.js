@@ -14,7 +14,7 @@ const bot = new TelegramBot(config.botAPI, {
 bot.onText(/\/start/, async (msg) => {
   const chatId = msg.chat.id;
 
-  if (!(await BotUser.findOne({ userId }))) {
+  if (!(await BotUser.findOne({ chatId }))) {
     await bot.sendMessage(
       chatId,
       "Пожалуйста, введите пароль для доступа к боту."
