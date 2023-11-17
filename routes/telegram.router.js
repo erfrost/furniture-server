@@ -14,7 +14,10 @@ const bot = new TelegramBot(config.botAPI, {
 bot.onText(/\/start/, async (msg) => {
   const chatId = msg.chat.id;
 
-  if (!(await BotUser.findOne({ chatId }))) {
+  const user = await BotUser.findOne({ chatId });
+
+  if (!user) {
+    await BotUser.create({ chatId, isAuth: false });
     await bot.sendMessage(
       chatId,
       "Пожалуйста, введите пароль для доступа к боту."
@@ -26,13 +29,19 @@ bot.on("message", async (msg) => {
   const chatId = msg.chat.id;
   const password = msg.text;
 
-  if (password === "ваш_правильный_пароль") {
-    if (!(await BotUser.findOne({ userId }))) {
-      await BotUser.create({ chatId });
+  const user = await BotUser.findOne({ chatId });
+
+  if (user && user.isAuth === false) {
+    if (password === "DomMebel888_BotPassword") {
+      if (!(await BotUser.findOne({ chatId }))) {
+        await BotUser.create({ chatId, isAuth: true });
+      }
+      await bot.sendMessage(chatId, "Добро пожаловать!");
+      user.isAuth = true;
+      await user.save();
+    } else {
+      await bot.sendMessage(chatId, "Неправильный пароль. Попробуйте еще раз.");
     }
-    await bot.sendMessage(chatId, "Добро пожаловать!");
-  } else {
-    await bot.sendMessage(chatId, "Неправильный пароль. Попробуйте еще раз.");
   }
 });
 

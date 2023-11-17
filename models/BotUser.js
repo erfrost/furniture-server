@@ -6,6 +6,10 @@ const schema = new Schema({
     required: true,
     unique: true,
   },
+  isAuth: {
+    type: Boolean,
+    required: true,
+  },
 });
 
 module.exports = model("BotUser", schema);
