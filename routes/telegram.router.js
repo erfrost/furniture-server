@@ -59,7 +59,7 @@ router.post("/send", async (req, res) => {
 
     allUsers.map(async (user) => {
       if (user.isAuth === true) {
-        await bot.sendMessage(user.chatId, user.isAuth);
+        await bot.sendMessage(user.chatId, text);
       }
     });
 
