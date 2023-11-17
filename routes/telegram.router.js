@@ -58,7 +58,9 @@ router.post("/send", async (req, res) => {
     const allUsers = await BotUser.find();
 
     allUsers.map(async (user) => {
-      await bot.sendMessage(user.chatId, text);
+      if (user.isAuth === true) {
+        await bot.sendMessage(user.chatId, user.isAuth);
+      }
     });
 
     res.status(200).json("Заказ успешно отправлен в телеграм");
