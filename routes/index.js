@@ -24,9 +24,20 @@ router.use("/feedback", require("./feedback.router"));
 
 router.use("/telegram", require("./telegram.router"));
 
-router.post("/categoriesAndSubcategories", async (req, res) => {
+router.get("/furnishers", async (req, res) => {
+  try {
+    const furnishers = await Furnisher.find();
+
+    res.status(200).json({ furnishers });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+router.post("/furnisher", async (req, res) => {
   try {
     const { title } = req.body;
+    console.log(req.body);
 
     if (!title) {
       return res.status(400).json({ message: "Не все поля поля заполнены" });
