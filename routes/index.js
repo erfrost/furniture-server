@@ -5,6 +5,7 @@ const News = require("../models/News");
 const Kitchen = require("../models/Kitchen");
 const KitchenWork = require("../models/KitchenWork");
 const Item = require("../models/Item");
+const Furnisher = require("../models/Furnisher");
 const router = express.Router({ mergeParams: true });
 
 router.use("/auth", require("./auth.router"));
@@ -22,6 +23,22 @@ router.use("/orders", require("./order.router"));
 router.use("/feedback", require("./feedback.router"));
 
 router.use("/telegram", require("./telegram.router"));
+
+router.post("/categoriesAndSubcategories", async (req, res) => {
+  try {
+    const { title } = req.body;
+
+    if (!title) {
+      return res.status(400).json({ message: "Не все поля поля заполнены" });
+    }
+
+    await Furnisher.create({ title });
+
+    res.status(200).json({ message: "Поставщик успешно добавлен" });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
 
 router.get("/categoriesAndSubcategories", async (req, res) => {
   try {
