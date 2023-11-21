@@ -51,6 +51,22 @@ router.post("/furnisher", async (req, res) => {
   }
 });
 
+router.delete("/furnisher/:furnisher_id", async (req, res) => {
+  try {
+    const furnisherId = req.params.furnisher_id;
+
+    if (!furnisherId) {
+      return res.status(400).json({ message: "Не все поля поля заполнены" });
+    }
+
+    await Furnisher.deleteOne({ _id: furnisherId });
+
+    res.status(200).json({ message: "Поставщик успешно удален" });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 router.get("/categoriesAndSubcategories", async (req, res) => {
   try {
     const categories = await Category.find();
