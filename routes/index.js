@@ -26,9 +26,25 @@ router.use("/telegram", require("./telegram.router"));
 
 router.get("/furnishers", async (req, res) => {
   try {
+    const result = await Item.aggregate([
+      {
+        $group: {
+          _id: "$furnisherId",
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+
     const furnishers = await Furnisher.find();
 
-    res.status(200).json({ furnishers });
+    const formattedResult = furnishers.map((furnisher) => {
+      const count =
+        result.find((item) => item._id === furnisher.title)?.count || 0;
+      return { id: furnisher.title, count };
+    });
+
+    console.log(formattedResult);
+    res.status(200).json({ furnishers: formattedResult });
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
   }

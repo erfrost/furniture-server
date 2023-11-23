@@ -3,6 +3,7 @@ const { Schema, model } = require("mongoose");
 const schema = new Schema({
   furnisherId: {
     type: String,
+    required: true,
   },
   title: {
     type: String,
