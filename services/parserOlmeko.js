@@ -25,42 +25,42 @@ const parserOlmeko = async () => {
   let virash = 0;
 
   allItems.map(async (item) => {
-    if (item.photo_names[0]) {
-      if (item.photo_names[0].includes("https://olmeko.ru")) {
-        // 6О
-        olmeko += 1;
-        await item.updateOne({ furnisherId: "6О" });
-        await item.save();
-      } else if (item.photo_names[0].includes("https://www.alensio.ru")) {
-        // 18А
-        alensio += 1;
-        await item.updateOne({ furnisherId: "18А" });
-        await item.save();
-      } else if (item.photo_names[0].includes("https://berhouse.ru")) {
-        // 8Б
-        berhouse += 1;
-        await item.updateOne({ furnisherId: "8Б" });
-        await item.save();
-      } else if (item.photo_names[0].includes("https://fm-olimp.ru")) {
-        // 4О
-        olymp += 1;
-        await item.updateOne({ furnisherId: "4О" });
-        await item.save();
-      } else if (item.photo_names[0].includes("http://sultandivan.ru")) {
-        // 1C
-        sultanDivan += 1;
-        await item.updateOne({ furnisherId: "1C" });
-        await item.save();
-      } else if (item.photo_names[0].includes("https://surmeb.ru")) {
-        // нету
-        surmeb += 1;
-      } else if (item.photo_names[0].includes("https://virashkaf.ru")) {
-        // 15В
-        virash += 1;
-        await item.updateOne({ furnisherId: "15В" });
-        await item.save();
-      }
-    }
+    // if (item.photo_names[0]) {
+    //   if (item.photo_names[0].includes("https://olmeko.ru")) {
+    //     // 6О
+    //     olmeko += 1;
+    //     await item.updateOne({ furnisherId: "6О" });
+    //     await item.save();
+    //   } else if (item.photo_names[0].includes("https://www.alensio.ru")) {
+    //     // 18А
+    //     alensio += 1;
+    //     await item.updateOne({ furnisherId: "18А" });
+    //     await item.save();
+    //   } else if (item.photo_names[0].includes("https://berhouse.ru")) {
+    //     // 8Б
+    //     berhouse += 1;
+    //     await item.updateOne({ furnisherId: "8Б" });
+    //     await item.save();
+    //   } else if (item.photo_names[0].includes("https://fm-olimp.ru")) {
+    //     // 4О
+    //     olymp += 1;
+    //     await item.updateOne({ furnisherId: "4О" });
+    //     await item.save();
+    //   } else if (item.photo_names[0].includes("http://sultandivan.ru")) {
+    //     // 1C
+    //     sultanDivan += 1;
+    //     await item.updateOne({ furnisherId: "1C" });
+    //     await item.save();
+    //   } else if (item.photo_names[0].includes("https://surmeb.ru")) {
+    //     // нету
+    //     surmeb += 1;
+    //   } else if (item.photo_names[0].includes("https://virashkaf.ru")) {
+    //     // 15В
+    //     virash += 1;
+    //     await item.updateOne({ furnisherId: "15В" });
+    //     await item.save();
+    //   }
+    // }
   });
 
   console.log(olmeko, alensio, berhouse, olymp, sultanDivan, surmeb, virash);
