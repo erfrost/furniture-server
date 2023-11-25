@@ -119,8 +119,24 @@ router.get("/by_category/:category_id", async (req, res) => {
 
     const subcategoriesIdArray = currentCategory.subcategories;
 
-    const countItems = await Item.find({ category_id: categoryId });
-    const count = countItems.length;
+    const countItems = await Item.aggregate([
+      {
+        $match: {
+          $or: [
+            { category_id: categoryId },
+            { "secondary_categories.category_id": categoryId },
+          ],
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+
+    const count = countItems.length > 0 ? countItems[0].count : 0;
 
     let allItems = Item.find({
       subcategory_id: { $in: subcategoriesIdArray },
