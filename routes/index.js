@@ -44,54 +44,9 @@ router.get("/furnishers", async (req, res) => {
     });
 
     const allItems = await Item.find();
-
     allItems.map(async (item) => {
-      if (
-        item.subcategory_id === "654bb110c2fbb0f34ee5a6e4" &&
-        !item.furnisherId
-      ) {
-        item.updateOne({ furnisherId: "16" });
-      }
-      // else {
-      //   await Item.deleteOne({ _id: item.id });
-      //   const currentCategory = await Subcategory.findOne({
-      //     _id: item.subcategory_id,
-      //   });
-      //   if (!currentCategory) return;
-      //   currentCategory.items = currentCategory.items.filter(
-      //     (id) => id !== item._id
-      //   );
-      //   await currentCategory.save();
-      // }
+      await item.updateOne({ secondary_categories: [] });
     });
-
-    // allItems.map(async (item) => {
-    //   const currentSubcategory = await Subcategory.findById(
-    //     item.subcategory_id
-    //   );
-
-    //   if (!currentSubcategory) {
-    //     await Item.deleteOne({ _id: item._id });
-    //   }
-    // });
-
-    // for (const item of allItems) {
-    //   await item.updateOne({
-    //     category_id: "653d4a3df572ba32d05217f9",
-    //     subcategory_id: "654bb167c2fbb0f34ee5a70e",
-    //   });
-    //   const subcategory = await Subcategory.findById(
-    //     "654bb167c2fbb0f34ee5a70e"
-    //   );
-
-    //   if (!subcategory.items.includes(item._id)) {
-    //     subcategory.items.push(item._id);
-    //     await subcategory.save();
-    //     console.log("Товар добавлен в подкатегорию");
-    //   } else {
-    //     console.log("Товар уже присутствует в подкатегории");
-    //   }
-    // }
 
     res.status(200).json({ furnishers: formattedResult });
   } catch (error) {

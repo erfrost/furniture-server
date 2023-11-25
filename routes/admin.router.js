@@ -547,8 +547,34 @@ router.post("/addSecondaryCategory", async (req, res) => {
       return res.status(404).json({ message: "Товар не найден" });
     }
 
+    const prevSecondaryCategory = currentItem.secondary_categories;
+
+    prevSecondaryCategory.map(async (obj) => {
+      const currentSubcategory = await Subcategory.findOne({
+        _id: obj.subcategory,
+      });
+      console.log("filter: ", obj, currentSubcategory);
+      if (!currentSubcategory) return;
+      currentSubcategory.items = currentSubcategory.items.filter(
+        (item) => !item.equals(currentItem._id)
+      );
+
+      await currentSubcategory.save();
+    });
+
     await currentItem.updateOne({
       secondary_categories: categoriesAndSubcategories,
+    });
+
+    categoriesAndSubcategories.map(async (obj) => {
+      const currentSubcategory = await Subcategory.findOne({
+        _id: obj.subcategory,
+      });
+      console.log("push: ", obj, currentSubcategory);
+      if (!currentSubcategory) return;
+      currentSubcategory.items.push(itemId);
+
+      await currentSubcategory.save();
     });
 
     res.status(200).json({ message: "Дополнительные разделы обновлены" });
@@ -556,5 +582,13 @@ router.post("/addSecondaryCategory", async (req, res) => {
     res.status(500).json({ message: "Internal server error", error });
   }
 });
+
+// {
+//   "itemId":"653c094ca13b9fc83b0aee74",
+//   "categoriesAndSubcategories": [{
+//       "category":"653c08481e1415d9c89d1765",
+//       "subcategories":"6561a0e7b4775cb7638c661a"
+//   }]
+// }
 
 module.exports = router;
