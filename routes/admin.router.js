@@ -543,7 +543,7 @@ router.post("/addSecondaryCategory", async (req, res) => {
       await item.updateOne({ secondary_categories: [] });
     });
 
-    if (!itemId || typeof categoriesAndSubcategories !== "object[]") {
+    if (!itemId || typeof categoriesAndSubcategories !== "object") {
       return res.status(404).json({ message: "Поля не должны быть пустыми" });
     }
 
