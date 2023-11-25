@@ -25,6 +25,10 @@ const schema = new Schema({
     type: Array,
     required: true,
   },
+  promotion: {
+    type: Boolean,
+    required: true,
+  },
   price: {
     type: Number,
     required: true,

@@ -536,7 +536,7 @@ router.post("/discount", async (req, res) => {
 
 router.post("/addSecondaryCategory", async (req, res) => {
   try {
-    const { itemId, categoriesAndSubcategories } = req.body;
+    const { itemId, categoriesAndSubcategories, promotion } = req.body;
 
     if (!itemId || typeof categoriesAndSubcategories !== "object") {
       return res.status(404).json({ message: "Поля не должны быть пустыми" });
@@ -563,6 +563,7 @@ router.post("/addSecondaryCategory", async (req, res) => {
 
     await currentItem.updateOne({
       secondary_categories: categoriesAndSubcategories,
+      promotion,
     });
 
     categoriesAndSubcategories.map(async (obj) => {

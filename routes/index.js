@@ -43,10 +43,10 @@ router.get("/furnishers", async (req, res) => {
       return { id: furnisher.title, count };
     });
 
-    const allItems = await Item.find();
-    allItems.map(async (item) => {
-      await item.updateOne({ secondary_categories: [] });
-    });
+    // const allItems = await Item.find();
+    // allItems.map(async (item) => {
+    //   await item.updateOne({ promotion: false });
+    // });
 
     res.status(200).json({ furnishers: formattedResult });
   } catch (error) {
