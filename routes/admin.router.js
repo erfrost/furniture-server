@@ -418,7 +418,7 @@ router.delete("/news/:news_id", async (req, res) => {
   }
 });
 
-router.post("/kitchen", upload.any(), async (req, res) => {
+router.post("/kitchen", async (req, res) => {
   try {
     const { title, description, specifications, advantages, photo_names } =
       req.body;
@@ -527,6 +527,34 @@ router.post("/discount", async (req, res) => {
     currentItem.discountPrice = discountPrice;
 
     await currentItem.save();
+
+    res.status(200).json({ message: "Скидка успешно добавлена" });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+router.post("/addSecondaryCategory", async (req, res) => {
+  try {
+    const { itemId, categoriesAndSubcategories } = req.body;
+
+    const allItems = await Item.find();
+    allItems.map(async (item) => {
+      await item.updateOne({ secondary_categories: [] });
+    });
+
+    if (!itemId || typeof categoriesAndSubcategories !== "object[]") {
+      return res.status(404).json({ message: "Поля не должны быть пустыми" });
+    }
+
+    const currentItem = await Item.findOne({ _id: itemId });
+    if (!currentItem) {
+      return res.status(404).json({ message: "Товар не найден" });
+    }
+
+    await currentItem.updateOne({
+      secondary_categories: categoriesAndSubcategories,
+    });
 
     res.status(200).json({ message: "Скидка успешно добавлена" });
   } catch (error) {

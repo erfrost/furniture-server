@@ -21,6 +21,10 @@ const schema = new Schema({
     type: String,
     required: true,
   },
+  secondary_categories: {
+    type: Array,
+    required: true,
+  },
   price: {
     type: Number,
     required: true,
