@@ -274,5 +274,31 @@ router.get("/by_furnisher/:furnisher_id", async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
+router.get("/promotion", async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit);
+    const offset = parseInt(req.query.offset);
+
+    const query = { promotion: true };
+
+    const count = await Item.countDocuments(query);
+
+    let itemsQuery = Item.find(query);
+
+    if (!isNaN(offset)) {
+      itemsQuery = itemsQuery.skip(offset);
+    }
+
+    if (!isNaN(limit)) {
+      itemsQuery = itemsQuery.limit(limit);
+    }
+
+    const items = await itemsQuery.exec();
+
+    res.status(200).json({ items, count });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error", error });
+  }
+});
 
 module.exports = router;
