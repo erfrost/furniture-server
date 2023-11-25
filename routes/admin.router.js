@@ -553,7 +553,6 @@ router.post("/addSecondaryCategory", async (req, res) => {
       const currentSubcategory = await Subcategory.findOne({
         _id: obj.subcategory,
       });
-      console.log("filter: ", obj, currentSubcategory);
       if (!currentSubcategory) return;
       currentSubcategory.items = currentSubcategory.items.filter(
         (item) => !item.equals(currentItem._id)
@@ -570,7 +569,7 @@ router.post("/addSecondaryCategory", async (req, res) => {
       const currentSubcategory = await Subcategory.findOne({
         _id: obj.subcategory,
       });
-      console.log("push: ", obj, currentSubcategory);
+
       if (!currentSubcategory) return;
       currentSubcategory.items.push(itemId);
 
@@ -587,7 +586,7 @@ router.post("/addSecondaryCategory", async (req, res) => {
 //   "itemId":"653c094ca13b9fc83b0aee74",
 //   "categoriesAndSubcategories": [{
 //       "category":"653c08481e1415d9c89d1765",
-//       "subcategories":"6561a0e7b4775cb7638c661a"
+//       "subcategory":"6561a0e7b4775cb7638c661a"
 //   }]
 // }
 
