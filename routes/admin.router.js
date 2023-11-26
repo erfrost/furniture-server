@@ -51,6 +51,7 @@ router.post("/items", async (req, res) => {
       !cashPrice ||
       !category_id ||
       !subcategory_id ||
+      !furnisherId ||
       !specifications ||
       !photo_names.length
     ) {
@@ -83,6 +84,7 @@ router.post("/items", async (req, res) => {
       furnisherId,
       specifications,
       photo_names,
+      promotion: false,
     });
 
     subcategory.items.push(newItem);
@@ -91,6 +93,7 @@ router.post("/items", async (req, res) => {
 
     res.status(200).json({ message: "Товар успешно добавлен" });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
