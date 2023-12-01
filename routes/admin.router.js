@@ -40,6 +40,7 @@ router.post("/items", async (req, res) => {
       category_id,
       subcategory_id,
       furnisherId,
+      vendor_code,
       specifications,
       photo_names,
     } = req.body;
@@ -52,6 +53,7 @@ router.post("/items", async (req, res) => {
       !category_id ||
       !subcategory_id ||
       !furnisherId ||
+      !vendor_code ||
       !specifications ||
       !photo_names.length
     ) {
@@ -82,6 +84,7 @@ router.post("/items", async (req, res) => {
       category_id,
       subcategory_id,
       furnisherId,
+      vendor_code,
       specifications,
       photo_names,
       promotion: false,
