@@ -294,9 +294,25 @@ router.get("/promotion", async (req, res) => {
     }
 
     const items = await itemsQuery.exec();
+    // const currentSubcategory = await Subcategory.findOne({
+    //   _id: "654bb11ac2fbb0f34ee5a6f0",
+    // });
+    // const ids = currentSubcategory.items;
+
+    // ids.map(async (id) => {
+    //   const currentItem = await Item.findById(id);
+    //   if (!currentItem) return;
+    //   if (currentItem.subcategory_id !== "654bb11ac2fbb0f34ee5a6f0") {
+    //     console.log(currentItem.title);
+    //     currentItem.items = ids.filter((el) => el !== id);
+
+    //     await currentItem.save();
+    //   }
+    // });
 
     res.status(200).json({ items, count });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: "Internal server error", error });
   }
 });

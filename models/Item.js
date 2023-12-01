@@ -49,10 +49,10 @@ const schema = new Schema({
     type: Array,
     required: true,
   },
-  vendor_code: {
-    type: String,
-    required: true,
-  },
+  // vendor_code: {
+  //   type: String,
+  //   required: true,
+  // },
 });
 
 schema.index({ title: "text", price: "number" });
