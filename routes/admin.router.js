@@ -426,10 +426,9 @@ router.delete("/news/:news_id", async (req, res) => {
 
 router.post("/kitchen", async (req, res) => {
   try {
-    const { title, description, specifications, advantages, photo_names } =
-      req.body;
+    const { title, description, specifications, photo_names } = req.body;
 
-    if (!title || !description || !advantages || !photo_names.length) {
+    if (!title || !description || !photo_names.length) {
       return res.status(404).json({ message: "Поля не должны быть пустыми" });
     }
     if (title.length > 100 || description.length > 1024) {
@@ -440,7 +439,6 @@ router.post("/kitchen", async (req, res) => {
       title,
       description,
       specifications,
-      advantages,
       photo_names,
     });
 
