@@ -7,6 +7,8 @@ const KitchenWork = require("../models/KitchenWork");
 const Item = require("../models/Item");
 const Furnisher = require("../models/Furnisher");
 const router = express.Router({ mergeParams: true });
+const fs = require("fs");
+const path = require("path");
 
 router.use("/auth", require("./auth.router"));
 
@@ -26,24 +28,35 @@ router.use("/telegram", require("./telegram.router"));
 
 router.get("/furnishers", async (req, res) => {
   try {
-    const result = await Item.aggregate([
-      {
-        $group: {
-          _id: "$furnisherId",
-          count: { $sum: 1 },
-        },
-      },
-    ]);
+    // const result = await Item.aggregate([
+    //   {
+    //     $group: {
+    //       _id: "$furnisherId",
+    //       count: { $sum: 1 },
+    //     },
+    //   },
+    // ]);
 
-    const furnishers = await Furnisher.find();
+    // const furnishers = await Furnisher.find();
 
-    const formattedResult = furnishers.map((furnisher) => {
-      const count =
-        result.find((item) => item._id === furnisher.title)?.count || 0;
-      return { id: furnisher.title, count };
-    });
+    // const formattedResult = furnishers.map((furnisher) => {
+    //   const count =
+    //     result.find((item) => item._id === furnisher.title)?.count || 0;
+    //   return { id: furnisher.title, count };
+    // });
 
-    res.status(200).json(formattedResult);
+    const allItems = await Item.find();
+    for (const item of allItems) {
+      const currentSubcategory = await Subcategory.findById(
+        item.subcategory_id
+      );
+      if (!currentSubcategory) {
+        console.log(item._id);
+        await Item.deleteOne({ _id: item._id });
+      }
+    }
+    console.log(count);
+    res.status(200).json({ message: "Успешно" });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Internal server error" });
@@ -212,6 +225,15 @@ router.get("/kitchenWork", async (req, res) => {
 
     res.status(200).json(allKitchenWork);
   } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+router.get("/sitemap", async (req, res) => {
+  try {
+    res.status(200).sendFile(path.join(__dirname, "../sitemap.xml"));
+  } catch (error) {
+    console.log(error);
     res.status(500).json({ message: "Internal server error" });
   }
 });

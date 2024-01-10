@@ -13,6 +13,7 @@ const parserBerhouse = require("./services/parserBerhouse");
 const parserSultanDivan = require("./services/parserSultanDivan");
 const parserOlymp = require("./services/parserOlymp");
 const parserOlmeko = require("./services/parserOlmeko");
+const createSitemap = require("./sitemap-creator");
 
 const app = express();
 
@@ -23,8 +24,11 @@ app.use(bodyParser.json({ limit: "5mb" }));
 app.use(bodyParser.urlencoded({ limit: "5mb", extended: true }));
 
 app.use("/images", express.static("../images"));
+app.use("/sitemap.xml", express.static("../sitemap.xml"));
 
 mongoose.set("strictQuery", false);
+
+// createSitemap();
 // createAdmin();
 // parserVirash();
 // parserAlensio();

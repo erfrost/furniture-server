@@ -22,6 +22,7 @@ router.get("/search", async (req, res) => {
       searchText.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
       "i"
     );
+
     aggregationPipeline.push({
       $match: {
         title: regex,
