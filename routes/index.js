@@ -231,6 +231,7 @@ router.get("/kitchenWork", async (req, res) => {
 
 router.get("/sitemap", async (req, res) => {
   try {
+    //
     res.status(200).sendFile(path.join(__dirname, "../sitemap.xml"));
   } catch (error) {
     console.log(error);
