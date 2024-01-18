@@ -504,13 +504,14 @@ router.post("/uploadImage", upload.single("image"), async (req, res) => {
     if (!file) {
       return res.status(400).json({ message: "Файл не был загружен" });
     }
-
-    await Image.create({
-      name: file.filename,
-    });
+    console.log(file);
+    // await Image.create({
+    //   name: file.filename,
+    // });
 
     res.status(200).json("https://api.dom888.ru/images/" + file.filename);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: "Internal server error" });
   }
 });

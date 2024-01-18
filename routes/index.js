@@ -28,35 +28,35 @@ router.use("/telegram", require("./telegram.router"));
 
 router.get("/furnishers", async (req, res) => {
   try {
-    // const result = await Item.aggregate([
-    //   {
-    //     $group: {
-    //       _id: "$furnisherId",
-    //       count: { $sum: 1 },
-    //     },
-    //   },
-    // ]);
+    const result = await Item.aggregate([
+      {
+        $group: {
+          _id: "$furnisherId",
+          count: { $sum: 1 },
+        },
+      },
+    ]);
 
-    // const furnishers = await Furnisher.find();
+    const furnishers = await Furnisher.find();
 
-    // const formattedResult = furnishers.map((furnisher) => {
-    //   const count =
-    //     result.find((item) => item._id === furnisher.title)?.count || 0;
-    //   return { id: furnisher.title, count };
-    // });
+    const formattedResult = furnishers.map((furnisher) => {
+      const count =
+        result.find((item) => item._id === furnisher.title)?.count || 0;
+      return { id: furnisher.title, count };
+    });
 
-    const allItems = await Item.find();
-    for (const item of allItems) {
-      const currentSubcategory = await Subcategory.findById(
-        item.subcategory_id
-      );
-      if (!currentSubcategory) {
-        console.log(item._id);
-        await Item.deleteOne({ _id: item._id });
-      }
-    }
-    console.log(count);
-    res.status(200).json({ message: "Успешно" });
+    // const allItems = await Item.find();
+    // for (const item of allItems) {
+    //   const currentSubcategory = await Subcategory.findById(
+    //     item.subcategory_id
+    //   );
+    //   if (!currentSubcategory) {
+    //     console.log(item._id);
+    //     await Item.deleteOne({ _id: item._id });
+    //   }
+    // }
+    // console.log(count);
+    res.status(200).json(formattedResult);
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Internal server error" });
