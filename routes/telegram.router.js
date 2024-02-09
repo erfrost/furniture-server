@@ -54,7 +54,7 @@ bot.on("left_chat_member", async (msg) => {
 router.post("/send", async (req, res) => {
   try {
     const { text } = req.body;
-
+    console.log(text);
     const allUsers = await BotUser.find();
 
     allUsers.map(async (user) => {

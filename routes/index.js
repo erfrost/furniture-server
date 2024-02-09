@@ -45,17 +45,6 @@ router.get("/furnishers", async (req, res) => {
       return { id: furnisher.title, count };
     });
 
-    // const allItems = await Item.find();
-    // for (const item of allItems) {
-    //   const currentSubcategory = await Subcategory.findById(
-    //     item.subcategory_id
-    //   );
-    //   if (!currentSubcategory) {
-    //     console.log(item._id);
-    //     await Item.deleteOne({ _id: item._id });
-    //   }
-    // }
-    // console.log(count);
     res.status(200).json(formattedResult);
   } catch (error) {
     console.log(error);

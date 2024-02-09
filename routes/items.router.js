@@ -295,21 +295,57 @@ router.get("/promotion", async (req, res) => {
     }
 
     const items = await itemsQuery.exec();
-    // const currentSubcategory = await Subcategory.findOne({
-    //   _id: "654bb11ac2fbb0f34ee5a6f0",
-    // });
-    // const ids = currentSubcategory.items;
 
-    // ids.map(async (id) => {
-    //   const currentItem = await Item.findById(id);
-    //   if (!currentItem) return;
-    //   if (currentItem.subcategory_id !== "654bb11ac2fbb0f34ee5a6f0") {
-    //     console.log(currentItem.title);
-    //     currentItem.items = ids.filter((el) => el !== id);
+    res.status(200).json({ items, count });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal server error", error });
+  }
+});
+router.get("/availability/all", async (req, res) => {
+  try {
+    const items = await Item.find({
+      $or: [
+        { "availability.kuzovatkina3": true },
+        { "availability.neftyanikov87": true },
+        { "availability.mira7": true },
+      ],
+    });
+    console.log(items);
+    const count = items.length;
 
-    //     await currentItem.save();
-    //   }
-    // });
+    res.status(200).json({ items, count });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal server error", error });
+  }
+});
+router.get("/availability/kuzovatkina", async (req, res) => {
+  try {
+    const items = await Item.find({ "availability.kuzovatkina3": true });
+    const count = items.length;
+
+    res.status(200).json({ items, count });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal server error", error });
+  }
+});
+router.get("/availability/neftyanikov", async (req, res) => {
+  try {
+    const items = await Item.find({ "availability.neftyanikov87": true });
+    const count = items.length;
+
+    res.status(200).json({ items, count });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal server error", error });
+  }
+});
+router.get("/availability/mira", async (req, res) => {
+  try {
+    const items = await Item.find({ "availability.mira7": true });
+    const count = items.length;
 
     res.status(200).json({ items, count });
   } catch (error) {

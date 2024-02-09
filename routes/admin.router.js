@@ -588,6 +588,59 @@ router.post("/addSecondaryCategory", async (req, res) => {
   }
 });
 
+//обновление наличия у одного товара
+router.post("/items/availability_byItemId/:item_id", async (req, res) => {
+  try {
+    const { item_id: itemId } = req.params;
+    const availability = req.body;
+    console.log(itemId, availability);
+    if (!itemId || !availability) {
+      return res.status(404).json({ message: "Поля не должны быть пустыми" });
+    }
+
+    const currentItem = await Item.findOne({ _id: itemId });
+    if (!currentItem) {
+      return res.status(404).json({ message: "Товар не найден" });
+    }
+
+    currentItem.availability = availability;
+    await currentItem.save();
+
+    res.status(200).json({ message: "Наличие товара успешно обновлено" });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// обновление наличия у всех товаров подкатегории
+router.post(
+  "/items/availability_bySubcategoryId/:subcategory_id",
+  async (req, res) => {
+    try {
+      const { subcategory_id: subcategoryId } = req.params;
+      const availability = req.body;
+      console.log(subcategoryId, availability);
+      if (!subcategoryId || !availability) {
+        return res.status(404).json({ message: "Поля не должны быть пустыми" });
+      }
+
+      const items = await Item.find({ subcategory_id: subcategoryId });
+      if (!items.length) {
+        return res.status(404).json({ message: "Товар не найден" });
+      }
+
+      items.map(async (item) => {
+        item.availability = availability;
+        await item.save();
+      });
+
+      res.status(200).json({ message: "Наличие товаров успешно обновлено" });
+    } catch (error) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  }
+);
+
 // {
 //   "itemId":"653c094ca13b9fc83b0aee74",
 //   "categoriesAndSubcategories": [{

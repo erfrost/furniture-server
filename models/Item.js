@@ -1,10 +1,6 @@
 const { Schema, model } = require("mongoose");
 
 const schema = new Schema({
-  furnisherId: {
-    type: String,
-    required: true,
-  },
   title: {
     type: String,
     required: true,
@@ -49,8 +45,18 @@ const schema = new Schema({
     type: Array,
     required: true,
   },
+  furnisherId: {
+    type: String,
+  },
   vendor_code: {
     type: String,
+  },
+  availability: {
+    type: {
+      kuzovatkina3: Boolean,
+      neftyanikov87: Boolean,
+      mira7: Boolean,
+    },
     required: true,
   },
 });
