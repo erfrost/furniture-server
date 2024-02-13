@@ -592,7 +592,7 @@ router.post("/addSecondaryCategory", async (req, res) => {
 router.post("/items/availability_byItemId/:item_id", async (req, res) => {
   try {
     const { item_id: itemId } = req.params;
-    const availability = req.body;
+    const { availability } = req.body;
     console.log(itemId, availability);
     if (!itemId) {
       return res.status(404).json({ message: "Поля не должны быть пустыми" });
@@ -618,8 +618,8 @@ router.post(
   async (req, res) => {
     try {
       const { subcategory_id: subcategoryId } = req.params;
-      const availability = req.body;
-
+      const { availability } = req.body;
+      console.log(availability);
       if (!subcategoryId) {
         return res.status(404).json({ message: "Поля не должны быть пустыми" });
       }
