@@ -52,11 +52,7 @@ const schema = new Schema({
     type: String,
   },
   availability: {
-    type: {
-      kuzovatkina3: Boolean,
-      neftyanikov87: Boolean,
-      mira7: Boolean,
-    },
+    type: Boolean,
     required: true,
   },
 });
