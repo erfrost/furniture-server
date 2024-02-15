@@ -88,6 +88,7 @@ router.post("/items", async (req, res) => {
       specifications,
       photo_names,
       promotion: false,
+      availability: false,
     });
 
     subcategory.items.push(newItem);
