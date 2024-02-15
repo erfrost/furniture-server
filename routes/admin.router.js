@@ -74,7 +74,6 @@ router.post("/items", async (req, res) => {
         .status(404)
         .json({ message: "Товар с таким название уже существует" });
     }
-
     const newItem = await Item.create({
       title,
       description,
