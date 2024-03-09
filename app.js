@@ -5,15 +5,6 @@ const chalk = require("chalk");
 const mongoose = require("mongoose");
 const routes = require("./routes");
 const bodyParser = require("body-parser");
-const parserVirash = require("./services/parserVirash.js");
-const parserAlensio = require("./services/parserAlensio");
-const parserMelodiaSnas = require("./services/parserMelodiaSna");
-const parserSurmeb = require("./services/parserSurmeb");
-const parserBerhouse = require("./services/parserBerhouse");
-const parserSultanDivan = require("./services/parserSultanDivan");
-const parserOlymp = require("./services/parserOlymp");
-const parserOlmeko = require("./services/parserOlmeko");
-const createSitemap = require("./sitemap-creator");
 
 const app = express();
 
@@ -41,7 +32,7 @@ mongoose.set("strictQuery", false);
 
 app.use("/api", routes);
 
-const PORT = config.get("PORT") ?? 8080;
+const PORT = 8080;
 
 async function start() {
   try {
