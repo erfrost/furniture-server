@@ -32,7 +32,7 @@ mongoose.set("strictQuery", false);
 
 app.use("/api", routes);
 
-const PORT = 3000;
+const PORT = 8080;
 
 async function start() {
   try {
