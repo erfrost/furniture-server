@@ -90,6 +90,8 @@ router.get("/categoriesAndSubcategories", async (req, res) => {
     const categories = await Category.find();
     const subcategories = await Subcategory.find();
 
+    console.log(categories, subcategories);
+
     res.status(200).json({ categories, subcategories });
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });

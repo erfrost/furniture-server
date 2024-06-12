@@ -3,14 +3,12 @@ const router = express.Router({ mergeParams: true });
 const Item = require("../models/Item");
 const Category = require("../models/Category");
 const Subcategory = require("../models/Subcategory");
+const Fuse = require("fuse.js");
+const fs = require("fs");
 
 router.get("/search", async (req, res) => {
   try {
     const searchText = req.query.search;
-    const limit = parseInt(req.query.limit);
-    const offset = parseInt(req.query.offset);
-
-    let aggregationPipeline = [];
 
     if (!searchText) {
       return res.status(404).json({
@@ -18,35 +16,34 @@ router.get("/search", async (req, res) => {
       });
     }
 
-    const regex = new RegExp(
-      searchText.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
-      "i"
-    );
+    const allItems = await Item.find().select("title").exec();
 
-    aggregationPipeline.push({
-      $match: {
-        title: regex,
-      },
+    const fuseOptions = {
+      keys: ["title"],
+      includeScore: true,
+    };
+
+    const fuse = new Fuse(allItems, fuseOptions);
+    const searchResult = fuse.search(searchText);
+
+    const resultItemIds = searchResult.map((result) => result.item._id);
+
+    const findedItems = await Item.find({ _id: { $in: resultItemIds } }).exec();
+
+    const resultItems = [];
+
+    resultItemIds.map((id) => {
+      const currentItem = findedItems.find(
+        (item) => item._id.toString() === id.toString()
+      );
+
+      resultItems.push(currentItem);
     });
 
-    const allItems = await Item.aggregate(aggregationPipeline);
-    const count = allItems.length;
-
-    if (!isNaN(offset)) {
-      aggregationPipeline.push({ $skip: offset });
-    }
-
-    if (!isNaN(limit)) {
-      aggregationPipeline.push({ $limit: limit });
-    }
-
-    const items = await Item.aggregate(aggregationPipeline);
-
-    res.status(200).json({ items, count });
+    res.status(200).json({ items: resultItems, count: resultItems.length });
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Internal server error", text: searchText });
+    console.log(error);
+    res.status(500).json({ message: "Internal server error" });
   }
 });
 
